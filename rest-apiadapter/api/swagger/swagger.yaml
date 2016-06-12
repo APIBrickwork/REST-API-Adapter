@@ -1,0 +1,78 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: gRPC-API-Adapter (REST)
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /getServiceRequest:
+    x-swagger-router-controller: getSerReq
+    get:
+      parameters:
+        - name: id
+          in: query
+          description: The ServiceRequestId to query for.
+          type: string
+      description: Gets information for the specified ServiceRequestId.
+      operationId: getSerReq
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            title: ServiceRequest
+            type: string
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+              
+  /createVm:
+    x-swagger-router-controller: createVm
+    post:
+      parameters:
+        - name: createVmRequest
+          in: body
+          required: true
+          schema:
+            type: object
+      description: gRPC-Service for createVm.
+      operationId: createVm
+      consumes:
+        - application/json
+      produces:
+        - text/plain
+      responses:
+        200:
+          description: Success
+          schema:
+            title: ServiceRequestId
+            type: string
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
