@@ -4,9 +4,9 @@ info:
   title: gRPC-API-Adapter (REST)
 # during dev, should point to your local machine
 host: localhost:10010
-# basePath prefixes all resource paths 
+# basePath prefixes all resource paths
 basePath: /
-# 
+#
 schemes:
   # tip: remove http to make production-grade
   - http
@@ -40,7 +40,7 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-              
+
   /createVm:
     x-swagger-router-controller: createVm
     post:
