@@ -52,7 +52,7 @@ function appendPaths(){
   appendStaticPaths();
   appendDynamicPaths();
   fs.appendFileSync(output, " /swagger:\n");
-  fs.appendFileSync(output, "  /x-swagger-pipe: swagger_raw\n");
+  fs.appendFileSync(output, "  x-swagger-pipe: swagger_raw\n");
 }
 
 function appendStaticPaths(){
@@ -98,7 +98,7 @@ function appendDynamicPaths(){
       fs.appendFileSync(output, "      in: body\n");
       fs.appendFileSync(output, "      required: true\n");
       fs.appendFileSync(output, "      schema:\n");
-      fs.appendFileSync(output, "      type: object\n");
+      fs.appendFileSync(output, "       type: object\n");
       fs.appendFileSync(output, "   description: gRPC-Servive for "+ rpcName +"\n");
       fs.appendFileSync(output, "   operationId: "+ rpcName + "\n");
       fs.appendFileSync(output, "   consumes:\n");
@@ -111,10 +111,10 @@ function appendDynamicPaths(){
       fs.appendFileSync(output, "     schema:\n");
       fs.appendFileSync(output, "      title: " + rpcName + "RequestId\n");
       fs.appendFileSync(output, "      type: string\n");
-      fs.appendFileSync(output, "     default:\n");
-      fs.appendFileSync(output, "      description: Error\n");
-      fs.appendFileSync(output, "      schema:\n");
-      fs.appendFileSync(output, "       $ref: \"#/definitions/ErrorResponse\"\n");
+      fs.appendFileSync(output, "    default:\n");
+      fs.appendFileSync(output, "     description: Error\n");
+      fs.appendFileSync(output, "     schema:\n");
+      fs.appendFileSync(output, "      $ref: \"#/definitions/ErrorResponse\"\n");
     }
   }
 }
@@ -123,7 +123,7 @@ function appendStaticDefinitions(){
   fs.appendFileSync(output, "definitions:\n");
   fs.appendFileSync(output, " ErrorResponse:\n");
   fs.appendFileSync(output, "  required:\n");
-  fs.appendFileSync(output, "   - message:\n");
+  fs.appendFileSync(output, "   - message\n");
   fs.appendFileSync(output, "  properties:\n");
   fs.appendFileSync(output, "   message:\n");
   fs.appendFileSync(output, "    type: string\n");
