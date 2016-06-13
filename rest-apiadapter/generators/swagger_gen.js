@@ -17,8 +17,6 @@ var port = 10010;
 */
 var protoFile = "../main.proto";
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
-var grpcServiceNames = [];
-var grpcRpcs = [];
 
 // Check if it was called as required of as main
 if(require.main === module){
