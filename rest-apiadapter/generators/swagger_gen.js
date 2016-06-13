@@ -38,47 +38,47 @@ function main(){
 function appendDescription(){
   fs.appendFileSync(output, "info:\n");
   // TODO: Weird bug that I simply cannot write string version on output
-  fs.appendFileSync(output, "\tversion: \"" + version +"\"\n");
-  fs.appendFileSync(output, "\ttitle: " + title + "\n");
+  fs.appendFileSync(output, " version: \"" + version +"\"\n");
+  fs.appendFileSync(output, " title: " + title + "\n");
   fs.appendFileSync(output, "host: " + host + ":" + port + "\n");
   fs.appendFileSync(output, "basePath: /\n");
-  fs.appendFileSync(output, "schemes:\n\t\- http\n\t\- https\n");
-  fs.appendFileSync(output, "consumes:\n\t- application/json\n");
-  fs.appendFileSync(output, "produces:\n\t- application/json\n");
+  fs.appendFileSync(output, "schemes:\n \- http\n \- https\n");
+  fs.appendFileSync(output, "consumes:\n - application/json\n");
+  fs.appendFileSync(output, "produces:\n - application/json\n");
 }
 
 function appendPaths(){
   fs.appendFileSync(output, "paths:\n");
   appendStaticPaths();
   appendDynamicPaths();
-  fs.appendFileSync(output, "\t/swagger:\n");
-  fs.appendFileSync(output, "\t\t/x-swagger-pipe: swagger_raw\n");
+  fs.appendFileSync(output, " /swagger:\n");
+  fs.appendFileSync(output, "  /x-swagger-pipe: swagger_raw\n");
 }
 
 function appendStaticPaths(){
   // Get service requests path
-  fs.appendFileSync(output, "\t/getServiceRequest:\n");
-  fs.appendFileSync(output, "\t\tx-swagger-router-controller: getSerReq\n");
-  fs.appendFileSync(output, "\t\t\tget:\n");
-  fs.appendFileSync(output, "\t\t\t\tparameters:\n");
-  fs.appendFileSync(output, "\t\t\t\t\t- name: id\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\tin: query\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\tdescription: The ServiceRequestId to query for.\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\ttype: string\n");
-  fs.appendFileSync(output, "\t\t\t\tdescription: Gets information for the specified ServiceRequestId.\n");
-  fs.appendFileSync(output, "\t\t\t\toperationId: getSerReq\n");
-  fs.appendFileSync(output, "\t\t\t\tproduces:\n");
-  fs.appendFileSync(output, "\t\t\t\t\t- text/plain\n");
-  fs.appendFileSync(output, "\t\t\t\tresponses:\n");
-  fs.appendFileSync(output, "\t\t\t\t\t200:\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\tdescription: Success\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\tschema:\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\t\ttitle: ServiceRequest\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\t\ttype: string\n");
-  fs.appendFileSync(output, "\t\t\t\t\tdefault:\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\tdescription: Error\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\tschema:\n");
-  fs.appendFileSync(output, "\t\t\t\t\t\t\t$ref: \"#/definitions/ErrorResponse\"\n");
+  fs.appendFileSync(output, " /getServiceRequest:\n");
+  fs.appendFileSync(output, "  x-swagger-router-controller: getSerReq\n");
+  fs.appendFileSync(output, "  get:\n");
+  fs.appendFileSync(output, "    parameters:\n");
+  fs.appendFileSync(output, "     - name: id\n");
+  fs.appendFileSync(output, "       in: query\n");
+  fs.appendFileSync(output, "       description: The ServiceRequestId to query for.\n");
+  fs.appendFileSync(output, "       type: string\n");
+  fs.appendFileSync(output, "    description: Gets information for the specified ServiceRequestId.\n");
+  fs.appendFileSync(output, "    operationId: getSerReq\n");
+  fs.appendFileSync(output, "    produces:\n");
+  fs.appendFileSync(output, "     - text/plain\n");
+  fs.appendFileSync(output, "    responses:\n");
+  fs.appendFileSync(output, "     200:\n");
+  fs.appendFileSync(output, "      description: Success\n");
+  fs.appendFileSync(output, "      schema:\n");
+  fs.appendFileSync(output, "       title: ServiceRequest\n");
+  fs.appendFileSync(output, "       type: string\n");
+  fs.appendFileSync(output, "     default:\n");
+  fs.appendFileSync(output, "      description: Error\n");
+  fs.appendFileSync(output, "      schema:\n");
+  fs.appendFileSync(output, "       $ref: \"#/definitions/ErrorResponse\"\n");
 }
 
 function appendDynamicPaths(){
@@ -87,44 +87,44 @@ function appendDynamicPaths(){
   console.log(util.inspect(protoObj, false, null, true));
   for(var i=0;i<protoObj.services.length;i++){
     for(var rpcName in protoObj.services[i].rpc){
-      fs.appendFileSync(output, "\t/" + protoObj.services[i].name +
+      fs.appendFileSync(output, " /" + protoObj.services[i].name +
       "/" + rpcName + ":\n");
-      fs.appendFileSync(output, "\t\tx-swagger-router-controller: " +
+      fs.appendFileSync(output, "  x-swagger-router-controller: " +
       protoObj.services[i].name + "\n");
 
-      fs.appendFileSync(output, "\t\tpost:\n");
-      fs.appendFileSync(output, "\t\t\tparameters:\n");
-      fs.appendFileSync(output, "\t\t\t\t- name: "+ rpcName +"Request\n");
-      fs.appendFileSync(output, "\t\t\t\t\tin: body\n");
-      fs.appendFileSync(output, "\t\t\t\t\trequired: true\n");
-      fs.appendFileSync(output, "\t\t\t\t\tschema:\n");
-      fs.appendFileSync(output, "\t\t\t\t\t\ttype: object\n");
-      fs.appendFileSync(output, "\t\t\tdescription: gRPC-Servive for "+ rpcName +"\n");
-      fs.appendFileSync(output, "\t\t\toperationId: "+ rpcName + "\n");
-      fs.appendFileSync(output, "\t\t\tconsumes:\n");
-      fs.appendFileSync(output, "\t\t\t\t- application/json\n");
-      fs.appendFileSync(output, "\t\t\tproduces:\n");
-      fs.appendFileSync(output, "\t\t\t\t- text/plain\n");
-      fs.appendFileSync(output, "\t\t\tresponses:\n");
-      fs.appendFileSync(output, "\t\t\t\t200:\n");
-      fs.appendFileSync(output, "\t\t\t\t\tdescription: Success\n");
-      fs.appendFileSync(output, "\t\t\t\t\tschema:\n");
-      fs.appendFileSync(output, "\t\t\t\t\t\ttitle: " + rpcName + "RequestId\n");
-      fs.appendFileSync(output, "\t\t\t\t\t\ttype: string\n");
-      fs.appendFileSync(output, "\t\t\t\t\tdefault:\n");
-      fs.appendFileSync(output, "\t\t\t\t\t\tdescription: Error\n");
-      fs.appendFileSync(output, "\t\t\t\t\t\tschema:\n");
-      fs.appendFileSync(output, "\t\t\t\t\t\t\t$ref: \"#/definitions/ErrorResponse\"\n");
+      fs.appendFileSync(output, "  post:\n");
+      fs.appendFileSync(output, "   parameters:\n");
+      fs.appendFileSync(output, "    - name: "+ rpcName +"Request\n");
+      fs.appendFileSync(output, "      in: body\n");
+      fs.appendFileSync(output, "      required: true\n");
+      fs.appendFileSync(output, "      schema:\n");
+      fs.appendFileSync(output, "      type: object\n");
+      fs.appendFileSync(output, "   description: gRPC-Servive for "+ rpcName +"\n");
+      fs.appendFileSync(output, "   operationId: "+ rpcName + "\n");
+      fs.appendFileSync(output, "   consumes:\n");
+      fs.appendFileSync(output, "    - application/json\n");
+      fs.appendFileSync(output, "   produces:\n");
+      fs.appendFileSync(output, "    - text/plain\n");
+      fs.appendFileSync(output, "   responses:\n");
+      fs.appendFileSync(output, "    200:\n");
+      fs.appendFileSync(output, "     description: Success\n");
+      fs.appendFileSync(output, "     schema:\n");
+      fs.appendFileSync(output, "      title: " + rpcName + "RequestId\n");
+      fs.appendFileSync(output, "      type: string\n");
+      fs.appendFileSync(output, "     default:\n");
+      fs.appendFileSync(output, "      description: Error\n");
+      fs.appendFileSync(output, "      schema:\n");
+      fs.appendFileSync(output, "       $ref: \"#/definitions/ErrorResponse\"\n");
     }
   }
 }
 
 function appendStaticDefinitions(){
   fs.appendFileSync(output, "definitions:\n");
-  fs.appendFileSync(output, "\tErrorResponse:\n");
-  fs.appendFileSync(output, "\t\trequired:\n");
-  fs.appendFileSync(output, "\t\t\t- message:\n");
-  fs.appendFileSync(output, "\t\tproperties:\n");
-  fs.appendFileSync(output, "\t\t\tmessage:\n");
-  fs.appendFileSync(output, "\t\t\t\ttype: string\n");
+  fs.appendFileSync(output, " ErrorResponse:\n");
+  fs.appendFileSync(output, "  required:\n");
+  fs.appendFileSync(output, "   - message:\n");
+  fs.appendFileSync(output, "  properties:\n");
+  fs.appendFileSync(output, "   message:\n");
+  fs.appendFileSync(output, "    type: string\n");
 }
