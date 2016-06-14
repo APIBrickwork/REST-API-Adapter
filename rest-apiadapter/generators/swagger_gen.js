@@ -37,7 +37,7 @@ function main(){
   appendDescription();
   appendPaths(protoObj);
   appendStaticDefinitions();
-  appendDynamicDefinitions(protoObj);
+  //appendDynamicDefinitions(protoObj);
 }
 
 
