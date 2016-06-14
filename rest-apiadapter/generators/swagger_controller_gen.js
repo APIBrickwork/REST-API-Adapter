@@ -1,3 +1,8 @@
+/**
+* Code-Generator which consumes a proto3-file and generates the according
+* Swagger.io controller implementation files.
+* author: Tobias Freundorfer (https://github.com/tfreundo)
+*/
 var fs = require("fs");
 var protobuf = require("protobufjs");
 var util = require("util");

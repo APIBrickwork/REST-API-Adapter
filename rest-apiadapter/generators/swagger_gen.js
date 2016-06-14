@@ -1,3 +1,8 @@
+/**
+* Code-Generator which consumes a proto3-file and generates the according
+* Swagger.io file.
+* author: Tobias Freundorfer (https://github.com/tfreundo)
+*/
 var fs = require("fs");
 var protobuf = require("protobufjs");
 var util = require("util");
@@ -27,9 +32,12 @@ if(require.main === module){
 
 function main(){
   fs.writeFileSync(output, "swagger: \"2.0\"\n");
+  var protoObj = protoParser.parse();
+  console.log(util.inspect(protoObj, false, null, true));
   appendDescription();
-  appendPaths();
+  appendPaths(protoObj);
   appendStaticDefinitions();
+  appendDynamicDefinitions(protoObj);
 }
 
 
@@ -45,10 +53,10 @@ function appendDescription(){
   fs.appendFileSync(output, "produces:\n - application/json\n");
 }
 
-function appendPaths(){
+function appendPaths(protoObj){
   fs.appendFileSync(output, "paths:\n");
   appendStaticPaths();
-  appendDynamicPaths();
+  appendDynamicPaths(protoObj);
   fs.appendFileSync(output, " /swagger:\n");
   fs.appendFileSync(output, "  x-swagger-pipe: swagger_raw\n");
 }
@@ -79,10 +87,8 @@ function appendStaticPaths(){
   fs.appendFileSync(output, "       $ref: \"#/definitions/ErrorResponse\"\n");
 }
 
-function appendDynamicPaths(){
+function appendDynamicPaths(protoObj){
 
-  var protoObj = protoParser.parse();
-  console.log(util.inspect(protoObj, false, null, true));
   for(var i=0;i<protoObj.services.length;i++){
     for(var rpcName in protoObj.services[i].rpc){
       fs.appendFileSync(output, " /" + protoObj.services[i].name +
@@ -92,7 +98,7 @@ function appendDynamicPaths(){
 
       fs.appendFileSync(output, "  post:\n");
       fs.appendFileSync(output, "   parameters:\n");
-      fs.appendFileSync(output, "    - name: "+ rpcName +"Request\n");
+      fs.appendFileSync(output, "    - name: "+ protoObj.services[i].rpc[rpcName].request +"\n");
       fs.appendFileSync(output, "      in: body\n");
       fs.appendFileSync(output, "      required: true\n");
       fs.appendFileSync(output, "      schema:\n");
@@ -125,4 +131,26 @@ function appendStaticDefinitions(){
   fs.appendFileSync(output, "  properties:\n");
   fs.appendFileSync(output, "   message:\n");
   fs.appendFileSync(output, "    type: string\n");
+}
+
+function appendDynamicDefinitions(protoObj){
+  for(var i=0;i<protoObj.messages.length;i++){
+    var messageName = protoObj.messages[i].name;
+
+    fs.appendFileSync(output, " " + messageName + ":\n");
+    // TODO: In fact they are not really required but optional
+    //fs.appendFileSync(output, "  required:\n");
+    fs.appendFileSync(output, "  properties:\n");
+    // TODO: Currently missing: enums, messages, options, oneofs
+    for(var j=0;j<protoObj.messages[i].fields.length;j++){
+      var rule = protoObj.messages[i].fields[j].rule;
+      var type = protoObj.messages[i].fields[j].type;
+      var fieldName = protoObj.messages[i].fields[j].name;
+      var options = protoObj.messages[i].fields[j].options;
+      var id = protoObj.messages[i].fields[j].id;
+      fs.appendFileSync(output, "   "+ fieldName +":\n");
+      fs.appendFileSync(output, "    type: "+ type +"\n");
+
+    }
+  }
 }
