@@ -38,7 +38,7 @@ function main(){
   appendDescription();
   appendPaths(protoObj);
   appendStaticDefinitions();
-  //appendDynamicDefinitions(protoObj);
+  appendDynamicDefinitions(protoObj);
 }
 
 
@@ -99,11 +99,13 @@ function appendDynamicPaths(protoObj){
 
       fs.appendFileSync(output, "  post:\n");
       fs.appendFileSync(output, "   parameters:\n");
-      fs.appendFileSync(output, "    - name: "+ protoObj.services[i].rpc[rpcName].request +"\n");
+      var requestType = protoObj.services[i].rpc[rpcName].request;
+      var swaggerRef = getSwaggerRefDefinition(requestType);
+      fs.appendFileSync(output, "    - name: "+ requestType +"\n");
       fs.appendFileSync(output, "      in: body\n");
       fs.appendFileSync(output, "      required: true\n");
       fs.appendFileSync(output, "      schema:\n");
-      fs.appendFileSync(output, "       type: object\n");
+      fs.appendFileSync(output, "       " + swaggerRef + "\n");
       fs.appendFileSync(output, "   description: gRPC-Servive for "+ rpcName +"\n");
       fs.appendFileSync(output, "   operationId: "+ rpcName + "\n");
       fs.appendFileSync(output, "   consumes:\n");
@@ -150,8 +152,54 @@ function appendDynamicDefinitions(protoObj){
       var options = protoObj.messages[i].fields[j].options;
       var id = protoObj.messages[i].fields[j].id;
       fs.appendFileSync(output, "   "+ fieldName +":\n");
-      fs.appendFileSync(output, "    type: "+ type +"\n");
-
+      if(isPrimitiveDataType(type)){
+        fs.appendFileSync(output, "    type: "+ convertDataTypeProto3ToSwagger(type)
+        +"\n");
+      }
+      else{
+        fs.appendFileSync(output, "    "+ getSwaggerRefDefinition(type) +"\n");
+      }
     }
   }
+}
+
+function convertDataTypeProto3ToSwagger(protoType){
+  if(protoType === "int32"){
+    return "integer";
+  }
+  else if(protoType === "int64"){
+    return "long";
+  }
+  else if(protoType === "float"){
+    return "float";
+  }
+  else if(protoType === "double"){
+    return "double";
+  }
+  else if(protoType === "bytes"){
+    return "byte";
+  }
+  else if(protoType === "bool"){
+    return "boolean";
+  }
+  else if(protoType === "Timestamp"){
+    return "dateTime";
+  }
+  else{
+    return "string";
+  }
+}
+
+function isPrimitiveDataType(protoType){
+  if(protoType === "int32" || protoType === "int64" ||
+  protoType === "float" || protoType === "double" ||
+  protoType === "bytes" || protoType === "bool" ||
+  protoType === "Timestamp" || protoType === "string"){
+    return true;
+  }
+  return false;
+}
+
+function getSwaggerRefDefinition(dataType){
+  return "$ref: \"#/definitions/" + dataType + "\"";
 }
