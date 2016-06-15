@@ -12,7 +12,9 @@
     "lodash": "^4.13.1",
     "lowdb": "^0.13.1",
     "node-json-db": "^0.7.2",
-    "swagger-connect": "^0.1.0"
+    "swagger-connect": "^0.1.0",
+    "protobufjs": "^5.0.1",
+    "grpc": "^0.14.1"
   },
   "devDependencies": {
     "should": "^7.1.0",
