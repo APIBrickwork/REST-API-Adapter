@@ -35,7 +35,7 @@ paths:
       schema:
        $ref: "#/definitions/ErrorResponse"
  /Ec2Ops/createVm:
-  x-swagger-router-controller: Ec2Ops
+  x-swagger-router-controller: gen_Ec2Ops
   post:
    parameters:
     - name: CreateVmRequest
@@ -60,7 +60,7 @@ paths:
      schema:
       $ref: "#/definitions/ErrorResponse"
  /Ec2Ops/destroyVm:
-  x-swagger-router-controller: Ec2Ops
+  x-swagger-router-controller: gen_Ec2Ops
   post:
    parameters:
     - name: DestroyVmRequest
@@ -85,7 +85,7 @@ paths:
      schema:
       $ref: "#/definitions/ErrorResponse"
  /Ec2Ops/initChefRepo:
-  x-swagger-router-controller: Ec2Ops
+  x-swagger-router-controller: gen_Ec2Ops
   post:
    parameters:
     - name: InitChefRepoRequest
@@ -110,7 +110,7 @@ paths:
      schema:
       $ref: "#/definitions/ErrorResponse"
  /WordPressOps/deployWpApp:
-  x-swagger-router-controller: WordPressOps
+  x-swagger-router-controller: gen_WordPressOps
   post:
    parameters:
     - name: DeployWpAppRequest
@@ -135,7 +135,7 @@ paths:
      schema:
       $ref: "#/definitions/ErrorResponse"
  /WordPressOps/deployDb:
-  x-swagger-router-controller: WordPressOps
+  x-swagger-router-controller: gen_WordPressOps
   post:
    parameters:
     - name: DeployDbRequest
@@ -160,7 +160,7 @@ paths:
      schema:
       $ref: "#/definitions/ErrorResponse"
  /WordPressOps/backupDb:
-  x-swagger-router-controller: WordPressOps
+  x-swagger-router-controller: gen_WordPressOps
   post:
    parameters:
     - name: BackupDbRequest
@@ -185,7 +185,7 @@ paths:
      schema:
       $ref: "#/definitions/ErrorResponse"
  /WordPressOps/restoreDb:
-  x-swagger-router-controller: WordPressOps
+  x-swagger-router-controller: gen_WordPressOps
   post:
    parameters:
     - name: RestoreDbRequest
@@ -210,7 +210,7 @@ paths:
      schema:
       $ref: "#/definitions/ErrorResponse"
  /GenericOps/executeCookbook:
-  x-swagger-router-controller: GenericOps
+  x-swagger-router-controller: gen_GenericOps
   post:
    parameters:
     - name: ExecuteCookbookRequest

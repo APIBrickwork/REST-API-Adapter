@@ -1,3 +1,4 @@
+"use strict";
 /**
 * Code-Generator which consumes a proto3-file and generates the according
 * Swagger.io file.
@@ -94,7 +95,7 @@ function appendDynamicPaths(protoObj){
       fs.appendFileSync(output, " /" + protoObj.services[i].name +
       "/" + rpcName + ":\n");
       fs.appendFileSync(output, "  x-swagger-router-controller: " +
-      protoObj.services[i].name + "\n");
+      "gen_" + protoObj.services[i].name + "\n");
 
       fs.appendFileSync(output, "  post:\n");
       fs.appendFileSync(output, "   parameters:\n");

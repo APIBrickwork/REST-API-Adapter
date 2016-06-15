@@ -1,3 +1,4 @@
+"use strict";
 /**
 * Code-Generator which consumes a proto3-file and generates the according
 * Swagger.io controller implementation files.
@@ -91,9 +92,22 @@ function appendCurrentId(){
 function appendModuleExports(grpcService){
   // append an exports for each rpc
   fs.appendFileSync(output, "module.exports = {\n");
+
+  // Compare the current prop index to the amount of props to determine whether
+  // a comma for separation should be added or not
+  var propsQty = Object.keys(grpcService.rpc).length;
+  var currentPropIndex = 0;
   for(var rpcName in grpcService.rpc){
-    fs.appendFileSync(output, "\t" + rpcName + ": " + rpcName + "\n");
+    fs.appendFileSync(output, "\t" + rpcName + ": " + rpcName);
+    if(currentPropIndex < propsQty-1){
+      fs.appendFileSync(output, ",\n");
+    }
+    else{
+      fs.appendFileSync(output, "\n");
+    }
+    currentPropIndex++;
   }
+
   fs.appendFileSync(output, "};\n\n");
 }
 
@@ -151,7 +165,7 @@ function appendRpcFunctionImplNoStream(grpcServiceName, rpcName, rpcProps){
   fs.appendFileSync(output, "\t\t// function 2: return serviceRequestId for lookup\n");
   fs.appendFileSync(output, "\t\tfunction(callback){\n");
 
-  fs.appendFileSync(output, "\t\t\tvar jsonRequest = {status:\"pending\", service:\"createVm\", output:\"\"};\n");
+  fs.appendFileSync(output, "\t\t\tvar jsonRequest = {status:\"pending\", service:\"" + rpcName + "\", output:\"\"};\n");
   fs.appendFileSync(output, "\t\t\tdb.set(currentId, jsonRequest).value();\n");
   fs.appendFileSync(output, "\t\t\tcallback();\n");
   // end of function2
@@ -159,7 +173,7 @@ function appendRpcFunctionImplNoStream(grpcServiceName, rpcName, rpcProps){
   fs.appendFileSync(output, "\t\t// callback function\n");
   fs.appendFileSync(output, "\t\tfunction(err){\n");
   fs.appendFileSync(output, "\t\t\tconsole.log(\"" + rpcName +
-  "-Callbacks for ServiceRequestId \" + currentId " + "\" finished.\"" + ");\n");
+  "-Callbacks for ServiceRequestId \" + currentId + " + "\" finished.\"" + ");\n");
   // end of callback function
   fs.appendFileSync(output, "\t\t}\n");
   // end of async.parallel
