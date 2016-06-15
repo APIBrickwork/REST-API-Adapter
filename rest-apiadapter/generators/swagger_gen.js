@@ -12,7 +12,7 @@ var util = require("util");
 * Project definitions
 */
 // TODO: Update after evaluation phase
-var output = "./demoswagger.yaml";
+var output = "./swagger.yaml";
 var version = "1.0";
 var title = "gRPC-API-Adapter (REST)";
 var host = "localhost"
