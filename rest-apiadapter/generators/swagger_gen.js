@@ -15,13 +15,13 @@ var util = require("util");
 var output = "./swagger.yaml";
 var version = "1.0";
 var title = "gRPC-API-Adapter (REST)";
-var host = "localhost"
-var port = 10010;
+var host = process.env.REST_HOST;
+var port = process.env.REST_PORT;
 
 /**
 * Protobuf definitions
 */
-var protoFile = "../main.proto";
+var protoFile = process.env.API_PROTO_PATH;
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 // Check if it was called as required of as main

@@ -26,6 +26,8 @@ services:
       API_HOST: testgrpc
       API_PORT: 8181
       API_PROTO_PATH: /api/main.proto
+      REST_HOST: "0.0.0.0"
+      REST_PORT: 8080
     command: ./startRESTApi.sh
 
     tester:

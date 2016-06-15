@@ -15,15 +15,15 @@ var output = "";
 /**
 * Protobuf definitions
 */
-var protoFile = "../main.proto";
+var protoFile = process.env.API_PROTO_PATH;
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 /**
 * gRPC definitions
 */
 // TODO: Get this by the docker environment variables
-var grpcHost = "172.17.0.2";
-var grpcPort = 8080;
+var grpcHost = process.env.API_HOST;
+var grpcPort = process.env.API_PORT;
 
 // Check if it was called as required of as main
 if(require.main === module){
