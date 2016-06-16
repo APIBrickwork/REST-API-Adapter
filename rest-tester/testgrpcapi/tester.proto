@@ -25,6 +25,11 @@ message CalculationResult{
   map<string, int64> map = 4;
 }
 
+message User{
+  string firstname = 1;
+  string lastname = 2;
+}
+
 message AddUserRequest{
   string firstname = 1;
   string lastname = 2;
@@ -34,10 +39,25 @@ message UserQtyResponse{
   int32 qty = 1;
 }
 
+message ListUsersRequest{
+  int32 limit = 1;
+}
+
+message UserResponse{
+  User user = 1;
+}
+
+message GreetingRequest{
+  string name = 1;
+}
+
+message GreetingResponse{
+  string greeting = 1;
+}
 
 service TesterService{
   rpc NoStream(CalculationRequest) returns (CalculationResult) {}
   rpc RequestStream(stream AddUserRequest) returns (UserQtyResponse) {}
-  rpc ResponseStream(CalculationRequest) returns (stream CalculationResult) {}
-  rpc BidirectionalStream(stream CalculationRequest) returns (stream CalculationResult) {}
+  rpc ResponseStream(ListUsersRequest) returns (stream UserResponse) {}
+  rpc BidirectionalStream(stream GreetingRequest) returns (stream GreetingResponse) {}
 }

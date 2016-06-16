@@ -44,7 +44,6 @@ function noStream(call, callback){
 }
 
 function requestStream(call, callback){
-  // TODO: Implement
 
   call.on("data", function(adduserreq){
     console.log("Received request for requestStream with values:\n"
@@ -63,18 +62,44 @@ function requestStream(call, callback){
   });
 }
 
-function responseStream(request){
-  // TODO: Implement
-  var feature;
+function responseStream(call){
 
-  console.log("Received request for responseStream with values:\n" + request);
+  console.log("Received request for responseStream with values:\n" +
+    JSON.stringify(call.request));
+
+  var limit = call.request.limit;
+
+  var valuesToReturn = 0;
+  if(limit > users.length){
+    valuesToReturn = users.length;
+  }
+
+  for(var i=0;i<valuesToReturn;i++){
+    var response = {
+      user: {firstname: users[i].firstname, lastname: users[i].lastname}
+    };
+    console.log("Sending response:\n" + JSON.stringify(response));
+    call.write(response);
+  }
+  call.end();
 }
 
-function bidirectionalStream(request){
-  // TODO: Implement
-  var feature;
+function bidirectionalStream(call){
 
-  console.log("Received request for bidirectionalStream with values:\n" + request);
+  console.log("Received request for bidirectionalStream with values:\n"
+    + JSON.stringify(call.request));
+  call.on("data", function(request){
+    console.log("request = " + JSON.stringify(request));
+
+    var response = {
+      greeting: "Hello " + request.name
+    };
+    console.log("Sending response:\n" + JSON.stringify(response));
+    call.write(response);
+  });
+  call.on("end", function(){
+    call.end();
+  })
 }
 
 function processCalculation(calcreq){

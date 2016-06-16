@@ -1,3 +1,4 @@
+"use strict";
 var testCase = require("nodeunit").testCase;
 var grpc = require("grpc");
 var async = require("async");
@@ -9,6 +10,9 @@ var grpcPort = 8181;
 
 var servicestub = new protoDescriptor.TesterService(grpcHost+":"+grpcPort,
   grpc.credentials.createInsecure());
+
+var users = [{firstname: "Volde", lastname: "mort"},
+  {firstname: "Heisen", lastname: "berg"}];
 
 exports.sendNoStreamRequest = function(test){
 
@@ -56,13 +60,10 @@ exports.sendRequestStreamRequest = function(test){
     test.done();
   });
 
-  var users = [{firstname: "Volde", lastname: "mort"},
-  {firstname: "Heisen", lastname: "berg"}];
   var userIndex = 0;
   function formRequest(){
     return function(callback){
-      console.log("Sending request: \n"
-      + JSON.stringify(users[userIndex]));
+      console.log("Sending request: \n" + JSON.stringify(users[userIndex]));
       call.write(users[userIndex]);
       userIndex++;
       _.delay(callback, _.random(500, 1500));
@@ -79,4 +80,49 @@ exports.sendRequestStreamRequest = function(test){
     call.end();
   });
 
+}
+
+exports.sendResponseStreamRequest = function(test){
+  var request = {
+    limit: 100
+  };
+
+  var call = servicestub.responseStream(request);
+  var respondedUsers = [];
+
+  call.on("data", function(user){
+    console.log("Received data:\n" + JSON.stringify(user));
+    respondedUsers.push(user);
+  });
+  call.on("end", function(){
+    test.equals(respondedUsers.length, users.length, "Expected user length " +
+      users.length + " but was " + respondedUsers.length);
+    test.done();
+  });
+  call.on("status", function(status){
+    console.log("Status: " + JSON.stringify(status));
+  });
+}
+
+exports.sendBidirectionalStreamRequest = function(test){
+  var names = [{name: "Heisenberg"}, {name: "Voldemort"}];
+  var respondedGreetings = [];
+
+  var call = servicestub.bidirectionalStream();
+
+  call.on("data", function(greeting){
+    console.log("Received data:\n" + JSON.stringify(greeting));
+    respondedGreetings.push(greeting);
+  });
+  call.on("end", function(){
+    test.equals(respondedGreetings.length, names.length, "Expected user length " +
+      names.length + " but was " + respondedGreetings.length);
+    test.done();
+  });
+
+  for(var i=0;i<names.length;i++){
+    console.log("Sending request:\n" + JSON.stringify(names[i]));
+    call.write(names[i]);
+  }
+  call.end();
 }
