@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option java_package = "com.example.foo";
+
+enum CalculationEnum {
+  option calculate = true;
+  UNKNOWN = 0;
+  ADDITION = 1;
+  MULTIPLICATION = 2;
+}
+
+message CalculationRequest {
+  option (my_option).a = true;
+  message innerMsg {
+    // Level 2
+    string info = 1;
+  }
+  repeated int64 values_to_use = 2;
+  CalculationEnum type = 3;
+  innerMsg info = 4;
+}
+
+message CalculationResult{
+  // Map holding the calculation type as string and result as int64
+  map<string, int64> map = 4;
+}
+
+service TesterService{
+  rpc NoStream(CalculationRequest) returns (CalculationResult) {}
+  rpc RequestStream(stream CalculationRequest) returns (CalculationResult) {}
+  rpc ResponseStream(CalculationRequest) returns (stream CalculationResult) {}
+  rpc BidirectionalStream(stream CalculationRequest) returns (stream CalculationResult) {}
+}
