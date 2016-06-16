@@ -1,9 +1,15 @@
+"use strict";
 var grpc = require("grpc");
 var protoDescriptor = grpc.load("./tester.proto");
 
 // TODO: Use environment variables
 var host = "localhost";
 var port = 8181;
+
+// TODO: Later has to call the REST-ADAPTER!!
+// TODO: Therefore it may need some restructuring
+
+var users = [];
 
 // Check if it was called as required of as main
 if(require.main === module){
@@ -27,37 +33,34 @@ function getServer() {
 }
 
 function noStream(call, callback){
-  // TODO: Imple,enmt
+
   console.log("Received request for noStream with values:\n"
   + JSON.stringify(call.request));
 
-  var values = call.request.values_to_use;
+  var response = processCalculation(call.request);
 
-  if(call.request.type === "ADDITION"){
-    var result = 0;
-    for(var i=0;i<values.length;i++){
-      result += parseInt(values[i]);
-    }
-    var response =
-    {
-      map: {"ADDITION": result}
-    };
-    console.log(response);
-    callback(null, response);
-  }
-  else if(call.request.type === "MULTIPLICATION"){
-
-  }
-  else{
-    console.log("Wrong type: " + call.request.type);
-  }
+  console.log("Sending response:\n" + JSON.stringify(response));
+  callback(null, response);
 }
 
-function requestStream(request){
+function requestStream(call, callback){
   // TODO: Implement
-  var feature;
 
-  console.log("Received request for requestStream with values:\n" + request);
+  call.on("data", function(adduserreq){
+    console.log("Received request for requestStream with values:\n"
+    + JSON.stringify(adduserreq));
+
+    users.push(adduserreq);
+    console.log("current size = "  + users.length);
+  });
+
+  call.on("end", function(){
+    var response = {
+      qty: users.length
+    }
+    console.log("Sending response:\n" + JSON.stringify(response));
+    callback(null, response);
+  });
 }
 
 function responseStream(request){
@@ -72,4 +75,34 @@ function bidirectionalStream(request){
   var feature;
 
   console.log("Received request for bidirectionalStream with values:\n" + request);
+}
+
+function processCalculation(calcreq){
+  var response;
+  var values = calcreq.values_to_use;
+
+  if(calcreq.type === "ADDITION"){
+    var result = 0;
+    for(var i=0;i<values.length;i++){
+      result += parseInt(values[i]);
+    }
+    response =
+    {
+      map: {"ADDITION": result}
+    };
+  }
+  else if(calcreq.type === "MULTIPLICATION"){
+    var result = 1;
+    for(var i=0;i<values.length;i++){
+      result *= parseInt(values[i]);
+    }
+    response =
+    {
+      map: {"MULTIPLICATION": result}
+    };
+  }
+  else{
+    console.log("Wrong type: " + call.request.type);
+  }
+  return response;
 }

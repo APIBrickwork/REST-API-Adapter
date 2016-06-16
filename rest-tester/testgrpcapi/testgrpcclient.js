@@ -1,5 +1,7 @@
 var testCase = require("nodeunit").testCase;
 var grpc = require("grpc");
+var async = require("async");
+var _ = require('lodash');
 var protoDescriptor = grpc.load("./tester.proto");
 
 var grpcHost = "localhost";
@@ -13,7 +15,7 @@ exports.sendNoStreamRequest = function(test){
   var request =
   {
     values_to_use: [3,4],
-    type: protoDescriptor.CalculationEnum.ADDITION,
+    type: protoDescriptor.CalculationEnum.MULTIPLICATION,
     info: {info: "teststring"}
   };
 
@@ -29,8 +31,12 @@ exports.sendNoStreamRequest = function(test){
         console.log("Received response:\n" + JSON.stringify(response));
         for(var key in response.map){
           var value = response.map[key];
-          test.equals(key, "ADDITION", "Expected key ADDITION but was " + key);
-          test.equals(value, 7, "Expected value 7 but was " + value);
+          if(request.type == protoDescriptor.CalculationEnum.ADDITION){
+            test.equals(value, 7, "Expected value 7 but was " + value);
+          }
+          else if(request.type == protoDescriptor.CalculationEnum.MULTIPLICATION){
+            test.equals(value, 12, "Expected value 12 but was " + value);
+          }
           counter++;
         }
         test.equals(counter, 1, "Expected map size " + 1 + " but was " + counter);
@@ -38,4 +44,39 @@ exports.sendNoStreamRequest = function(test){
 
       test.done();
     });
+}
+
+exports.sendRequestStreamRequest = function(test){
+  var call = servicestub.requestStream(function(err, resp){
+    if(err){
+      callback(err);
+    }
+    console.log("Received response:\n" + JSON.stringify(resp));
+    test.equals(resp.qty, 2, "Expected size 2 but was " + resp.qty);
+    test.done();
+  });
+
+  var users = [{firstname: "Volde", lastname: "mort"},
+  {firstname: "Heisen", lastname: "berg"}];
+  var userIndex = 0;
+  function formRequest(){
+    return function(callback){
+      console.log("Sending request: \n"
+      + JSON.stringify(users[userIndex]));
+      call.write(users[userIndex]);
+      userIndex++;
+      _.delay(callback, _.random(500, 1500));
+    }
+  }
+
+  var numRequests = 2;
+  var requests = [];
+  for(var i=0;i<numRequests;i++){
+    requests[i] = formRequest();
+  }
+  async.series(requests, function(){
+    console.log("Calling end");
+    call.end();
+  });
+
 }
