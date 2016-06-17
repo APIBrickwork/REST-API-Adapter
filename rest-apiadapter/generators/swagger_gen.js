@@ -16,12 +16,12 @@ var output = "./swagger.yaml";
 var version = "1.0";
 var title = "gRPC-API-Adapter (REST)";
 var host = "0.0.0.0";
-var port = 8080;
+var port = process.env.REST_LISTEN_PORT;
 
 /**
 * Protobuf definitions
 */
-var protoFile = "./tester.proto";
+var protoFile = process.env.API_PROTO_PATH;
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 // Check if it was called as required of as main
@@ -149,7 +149,7 @@ function appendDynamicDefinitions(messages){
 
     fs.appendFileSync(output, " " + messageName + ":\n");
     fs.appendFileSync(output, "  properties:\n");
-    // TODO: Currently missing: inner messages, options, oneofs
+    // TODO: Currently missing: options, oneofs
     for(var j=0;j<messages[i].fields.length;j++){
       var rule = messages[i].fields[j].rule;
       var type = messages[i].fields[j].type;
