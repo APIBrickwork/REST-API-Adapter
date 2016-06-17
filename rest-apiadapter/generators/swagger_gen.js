@@ -15,8 +15,8 @@ var util = require("util");
 var output = "./swagger.yaml";
 var version = "1.0";
 var title = "gRPC-API-Adapter (REST)";
-var host = process.env.REST_HOST;
-var port = process.env.REST_PORT;
+var host = process.env.REST_LISTEN_HOST;
+var port = process.env.REST_LISTEN_PORT;
 
 /**
 * Protobuf definitions
