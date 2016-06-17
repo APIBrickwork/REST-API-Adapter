@@ -6,19 +6,19 @@ RUN apt-get update && \
     apt-get install -y git && \
     apt-get install -y netcat
 
-# Install swagger project globally
-RUN npm --quiet install -g swagger
+# Install nodeunit project globally
+RUN npm --quiet install -g nodeunit
 
 # Add user
-RUN useradd -ms /bin/bash swagger
+RUN useradd -ms /bin/bash tester
 
-USER swagger
-WORKDIR /home/swagger
+USER tester
+WORKDIR /home/tester
 
 # Clone APIAdapter repo
 RUN git clone -b dev-swagger https://github.com/tfreundo/gRPC-APIAdapter.git
 
 # Install all necessary modules using npm
-RUN export NODE_PATH=$NODEPATH:/home/swagger/gRPC-APIAdapter/rest-apiadapter
-WORKDIR /home/swagger/gRPC-APIAdapter/rest-apiadapter
+RUN export NODE_PATH=$NODEPATH:/home/tester/gRPC-APIAdapter/rest-tester/testgrpcapi
+WORKDIR /home/tester/gRPC-APIAdapter/rest-tester/testgrpcapi
 RUN npm --quiet install

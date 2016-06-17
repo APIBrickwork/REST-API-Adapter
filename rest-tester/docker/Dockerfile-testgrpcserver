@@ -1,0 +1,23 @@
+FROM node
+MAINTAINER Tobias Freundorfer, https://github.com/tfreundo
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git
+
+# Add main.proto to api folder
+COPY ./tester.proto /api/main.proto
+
+# Add user
+RUN useradd -ms /bin/bash grpcserver
+
+USER grpcserver
+WORKDIR /home/grpcserver
+
+# Clone APIAdapter repo
+RUN git clone -b dev-swagger https://github.com/tfreundo/gRPC-APIAdapter.git
+
+# Install all necessary modules using npm
+RUN export NODE_PATH=$NODEPATH:/home/grpcserver/gRPC-APIAdapter/rest-tester/testgrpcapi
+WORKDIR /home/grpcserver/gRPC-APIAdapter/rest-tester/testgrpcapi
+RUN npm --quiet install

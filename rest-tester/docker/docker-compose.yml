@@ -1,43 +1,40 @@
 version: '2'
 services:
 
-  testgrpc:
+  testgrpcserver:
     build:
       context: .
-      dockerfile: TODO
+      dockerfile: Dockerfile-testgrpcserver
     ports:
-      - "8181:8181"
+      - "8181"
     volumes:
-      - apistore:/api
-    command: TODO
+      - /api
+    command: node testgrpcserver.js
 
   restapiadapter:
     build:
       context: .
       dockerfile: Dockerfile-restapiadapter
     volumes_from:
-      - testgrpc
+      - testgrpcserver
     links:
-      - testgrpc
+      - testgrpcserver
     ports:
-      - "8080:8080"
-    # This only affects runtime!!! Need to duplicate in Dockerfile if needed at buildtime!!
+      - "10010"
     environment:
-      API_HOST: testgrpc
+      API_HOST: testgrpcserver
       API_PORT: 8181
-      API_PROTO_PATH: /api/main.proto
-      REST_HOST: "0.0.0.0"
-      REST_PORT: 8080
-    command: ./startRESTApi.sh
+      API_PROTO_PATH: "/api/main.proto"
+      REST_LISTEN_PORT: 10010
+    command: sh startRESTApi.sh
 
-    tester:
-      build:
-        image: ubuntu
-      links:
-        - restapiadapter
-      environment:
-        ADAPTER_HOST: restapiadapter
-        ADAPTER_PORT: 8080
-
-volumes:
-  apistore:
+  tester:
+    build:
+      context: .
+      dockerfile: Dockerfile-tester
+    links:
+      - restapiadapter
+    environment:
+      ADAPTER_HOST: restapiadapter
+      ADAPTER_PORT: 10010
+    command: sh startTestClient.sh
