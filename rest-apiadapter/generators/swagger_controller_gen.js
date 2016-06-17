@@ -27,6 +27,9 @@ var grpcPort = process.env.API_PORT;
 
 // Check if it was called as required of as main
 if(require.main === module){
+  console.log("swagger_controller_gen.js using environment variables:\n"
+    + "API_HOST = " + grpcHost + " | API_PORT = " + grpcPort
+    + " | API_PROTO_PATH = " + protoFile);
   main();
 }else{
   // Not allowed to require.

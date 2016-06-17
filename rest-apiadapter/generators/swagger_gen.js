@@ -26,6 +26,8 @@ var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 // Check if it was called as required of as main
 if(require.main === module){
+  console.log("swagger_gen.js using environment variables:\n"
+    + "REST_LISTEN_PORT = " + port + " | API_PROTO_PATH = " + protoFile); 
   main();
 }else{
   // Not allowed to require.
