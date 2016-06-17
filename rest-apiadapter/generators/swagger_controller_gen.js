@@ -41,6 +41,7 @@ function main(){
   // in that file
   for(var i=0;i<protoObj.services.length;i++){
     output = "./" + filePrefix + protoObj.services[i].name + ".js";
+    console.log("Generating " + output);
     appendRequires();
     appendProtoVariables(protoObj);
     appendGrpcVariables(protoObj.services[i]);
