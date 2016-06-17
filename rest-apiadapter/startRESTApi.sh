@@ -34,10 +34,6 @@ echo "### Copying Swagger file to directory $SCRIPTPATH$swaggerYamlPath"
 cd $SCRIPTPATH$generatorPath
 cp ./swagger.yaml $SCRIPTPATH$swaggerYamlPath
 
-echo "### Generated swagger.yaml:"
-cd $SCRIPTPATH$swaggerYamlPath
-cat ./swagger.yaml
-
 echo "### Generating Swagger Controller Implementations using proto3-file as input."
 cd $SCRIPTPATH$generatorPath
 node swagger_controller_gen.js
