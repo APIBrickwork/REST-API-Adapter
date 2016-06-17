@@ -16,18 +16,18 @@ var output = "./swagger.yaml";
 var version = "1.0";
 var title = "gRPC-API-Adapter (REST)";
 var host = "0.0.0.0";
-var port = process.env.REST_LISTEN_PORT;
+var port = 8080;
 
 /**
 * Protobuf definitions
 */
-var protoFile = process.env.API_PROTO_PATH;
+var protoFile = "./tester.proto";
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 // Check if it was called as required of as main
 if(require.main === module){
   console.log("swagger_gen.js using environment variables:\n"
-    + "REST_LISTEN_PORT = " + port + " | API_PROTO_PATH = " + protoFile); 
+    + "REST_LISTEN_PORT = " + port + " | API_PROTO_PATH = " + protoFile);
   main();
 }else{
   // Not allowed to require.
@@ -39,13 +39,13 @@ function main(){
   appendDescription();
   appendPaths(protoObj);
   appendStaticDefinitions();
-  appendDynamicDefinitions(protoObj);
+  appendDynamicDefinitions(protoObj.messages);
+  appendEnumDefinitions(protoObj);
 }
 
 
 function appendDescription(){
   fs.appendFileSync(output, "info:\n");
-  // TODO: Weird bug that I simply cannot write string version on output
   fs.appendFileSync(output, " version: \"" + version +"\"\n");
   fs.appendFileSync(output, " title: " + title + "\n");
   fs.appendFileSync(output, "host: " + host + ":" + port + "\n");
@@ -137,23 +137,31 @@ function appendStaticDefinitions(){
   fs.appendFileSync(output, "    type: string\n");
 }
 
-function appendDynamicDefinitions(protoObj){
-  for(var i=0;i<protoObj.messages.length;i++){
-    var messageName = protoObj.messages[i].name;
+function appendDynamicDefinitions(messages){
+  for(var i=0;i<messages.length;i++){
+    var messageName = messages[i].name;
+    console.log(messages[i]);
+
+    // TODO: Test recursively
+    if(messages[i].messages.length > 0 ){
+      appendDynamicDefinitions(messages[i].messages);
+    }
 
     fs.appendFileSync(output, " " + messageName + ":\n");
-    // TODO: In fact they are not really required but optional
-    //fs.appendFileSync(output, "  required:\n");
     fs.appendFileSync(output, "  properties:\n");
-    // TODO: Currently missing: enums, messages, options, oneofs
-    for(var j=0;j<protoObj.messages[i].fields.length;j++){
-      var rule = protoObj.messages[i].fields[j].rule;
-      var type = protoObj.messages[i].fields[j].type;
-      var fieldName = protoObj.messages[i].fields[j].name;
-      var options = protoObj.messages[i].fields[j].options;
-      var id = protoObj.messages[i].fields[j].id;
+    // TODO: Currently missing: inner messages, options, oneofs
+    for(var j=0;j<messages[i].fields.length;j++){
+      var rule = messages[i].fields[j].rule;
+      var type = messages[i].fields[j].type;
+      var fieldName = messages[i].fields[j].name;
+      var options = messages[i].fields[j].options;
+      var id = messages[i].fields[j].id;
       fs.appendFileSync(output, "   "+ fieldName +":\n");
-      if(isPrimitiveDataType(type)){
+      // Special case because maps are currently not supported by swagger
+      if(rule == "map" || rule == "repeated"){
+        appendMapArrayDefinition(type);
+      }
+      else if(isPrimitiveDataType(type)){
         fs.appendFileSync(output, "    type: "+ convertDataTypeProto3ToSwagger(type)
         +"\n");
       }
@@ -164,27 +172,47 @@ function appendDynamicDefinitions(protoObj){
   }
 }
 
+function appendEnumDefinitions(protoObj){
+
+  for(var i=0;i<protoObj.enums.length;i++){
+
+    var enumName = protoObj.enums[i].name;
+    fs.appendFileSync(output, " " + enumName + ":\n");
+    fs.appendFileSync(output, "  type: string\n");
+    fs.appendFileSync(output, "  enum: [");
+    for(var j=0;j<protoObj.enums[i].values.length;j++){
+      var valueName = protoObj.enums[i].values[j].name;
+      fs.appendFileSync(output, "\"" + valueName + "\"");
+
+      if(j < protoObj.enums[i].values.length -1){
+        fs.appendFileSync(output, ",");
+      }
+    }
+    fs.appendFileSync(output, "]\n");
+  }
+}
+
 function convertDataTypeProto3ToSwagger(protoType){
   if(protoType === "int32"){
     return "integer";
   }
   else if(protoType === "int64"){
-    return "long";
+    return "integer";
   }
   else if(protoType === "float"){
-    return "float";
+    return "number";
   }
   else if(protoType === "double"){
-    return "double";
+    return "number";
   }
   else if(protoType === "bytes"){
-    return "byte";
+    return "string";
   }
   else if(protoType === "bool"){
     return "boolean";
   }
   else if(protoType === "Timestamp"){
-    return "dateTime";
+    return "string";
   }
   else{
     return "string";
@@ -203,4 +231,16 @@ function isPrimitiveDataType(protoType){
 
 function getSwaggerRefDefinition(dataType){
   return "$ref: \"#/definitions/" + dataType + "\"";
+}
+
+function appendMapArrayDefinition(type){
+  fs.appendFileSync(output, "    type: array\n");
+  fs.appendFileSync(output, "    items:\n");
+  if(isPrimitiveDataType(type)){
+    fs.appendFileSync(output, "     type: "+
+      convertDataTypeProto3ToSwagger(type) + "\n");
+  }
+  else{
+    fs.appendFileSync(output, "     " + getSwaggerRefDefinition(type) +"\n");
+  }
 }
