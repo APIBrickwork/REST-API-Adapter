@@ -34,7 +34,6 @@ if(require.main === module){
 function main(){
   fs.writeFileSync(output, "swagger: \"2.0\"\n");
   var protoObj = protoParser.parse();
-  console.log(util.inspect(protoObj, false, null, true));
   appendDescription();
   appendPaths(protoObj);
   appendStaticDefinitions();

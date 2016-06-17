@@ -34,7 +34,6 @@ if(require.main === module){
 
 function main(){
   var protoObj = protoParser.parse();
-  console.log(util.inspect(protoObj, false, null, true));
   // Create one controller file per gRPC-Service and add all rpcs as functions
   // in that file
   for(var i=0;i<protoObj.services.length;i++){
@@ -120,7 +119,7 @@ function appendRpcFunctionImpl(grpcService){
     // TODO: Could be enough to implement without stream for the first local tests
     fs.appendFileSync(output, "function " + rpcName + "(req, res){\n");
       if(grpcService.rpc.hasOwnProperty(rpcName)){
-        console.log(grpcService.rpc[rpcName]);
+
         usesRequestStream = grpcService.rpc[rpcName].request_stream;
         usesResponseStream = grpcService.rpc[rpcName].response_stream;
 
