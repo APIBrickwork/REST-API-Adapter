@@ -15,7 +15,7 @@ var util = require("util");
 var output = "./swagger.yaml";
 var version = "1.0";
 var title = "gRPC-API-Adapter (REST)";
-var host = "0.0.0.0";
+var host = "localhost";
 var port = process.env.REST_LISTEN_PORT;
 
 /**
