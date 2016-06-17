@@ -42,8 +42,12 @@ echo "### Copying Swagger Controller Implementation files to directory $SCRIPTPA
 cd $SCRIPTPATH$generatorPath
 cp ./gen_*.js $SCRIPTPATH$swaggerControllerPath
 
-echo "### Waiting for gRPC Server to get ready..."
-while ! nc -z ${API_HOST} ${API_PORT}; do sleep 3; done
+echo "### Waiting for ${ADAPTER_HOST}:${ADAPTER_PORT} to get ready..."
+while ! nc -vz ${API_HOST} ${API_PORT}
+do
+  echo "### Retry..."
+  sleep 3;
+done
 
 echo "### Starting Swagger Project."
 cd $SCRIPTPATH
