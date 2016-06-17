@@ -5,8 +5,11 @@ var async = require("async");
 var _ = require('lodash');
 var protoDescriptor = grpc.load("./tester.proto");
 
-var grpcHost = "localhost";
-var grpcPort = 8181;
+var grpcHost = process.env.ADAPTER_HOST;
+var grpcPort = process.env.ADAPTER_PORT;
+
+// TODO: Later has to call the REST-ADAPTER!!
+// TODO: Therefore it may need some restructuring
 
 var servicestub = new protoDescriptor.TesterService(grpcHost+":"+grpcPort,
   grpc.credentials.createInsecure());

@@ -3,11 +3,8 @@ var grpc = require("grpc");
 var protoDescriptor = grpc.load("./tester.proto");
 
 // TODO: Use environment variables
-var host = "localhost";
+var host = "0.0.0.0";
 var port = 8181;
-
-// TODO: Later has to call the REST-ADAPTER!!
-// TODO: Therefore it may need some restructuring
 
 var users = [];
 
