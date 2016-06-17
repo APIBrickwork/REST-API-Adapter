@@ -57,7 +57,7 @@ function appendRequires(){
 }
 
 function appendProtoVariables(protoObj){
-  fs.appendFileSync(output, "var protoFile = \"./main.proto\";\n");
+  fs.appendFileSync(output, "var protoFile = \""+ protoFile + "\";\n");
   // Append package to protoDescriptor if set
   var protoDescriptorString = "var protoDescriptor = grpc.load(protoFile)"
   if(!protoObj.package === null){
