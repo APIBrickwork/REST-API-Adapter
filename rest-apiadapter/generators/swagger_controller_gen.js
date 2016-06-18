@@ -145,10 +145,11 @@ function appendRpcFunctionImplNoStream(grpcServiceName, rpcName, rpcProps){
   fs.appendFileSync(output, "\t async.parallel([\n");
   fs.appendFileSync(output, "\t\t// function 1: call of gRPC service\n");
   fs.appendFileSync(output, "\t\tfunction(callback){\n");
-  // TODO: Evaluate if the first letter of rpcProps.request needs lower case
+
   var requestBodyString = "req.swagger.params." + rpcProps.request + ".value";
+  var lowerCaseRpcName = rpcName.charAt(0).toLowerCase() + rpcName.slice(1);
   fs.appendFileSync(output, "\t\t\t" + grpcServiceName + "stub." +
-  rpcName + "(" + requestBodyString + ",\n" + "\t\t\tfunction(err, feature){\n");
+  lowerCaseRpcName + "(" + requestBodyString + ",\n" + "\t\t\tfunction(err, feature){\n");
   fs.appendFileSync(output, "\t\t\t\tif(err){\n");
   fs.appendFileSync(output, "\t\t\t\t\tdb.set(currentId + \".status\", \"error\").value();\n");
   fs.appendFileSync(output, "\t\t\t\t\tdb.set(currentId + \".output\", err).value();\n");
