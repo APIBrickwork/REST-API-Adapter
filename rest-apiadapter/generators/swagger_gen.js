@@ -94,6 +94,7 @@ function appendDynamicPaths(protoObj){
     for(var rpcName in protoObj.services[i].rpc){
       fs.appendFileSync(output, " /" + protoObj.services[i].name +
       "/" + rpcName + ":\n");
+
       fs.appendFileSync(output, "  x-swagger-router-controller: " +
       "gen_" + protoObj.services[i].name + "\n");
 
@@ -106,7 +107,7 @@ function appendDynamicPaths(protoObj){
       fs.appendFileSync(output, "      required: true\n");
       fs.appendFileSync(output, "      schema:\n");
       fs.appendFileSync(output, "       " + swaggerRef + "\n");
-      fs.appendFileSync(output, "   description: gRPC-Servive for "+ rpcName +"\n");
+      fs.appendFileSync(output, "   description: gRPC-Service " + rpcName +"\n");
       fs.appendFileSync(output, "   operationId: "+ rpcName + "\n");
       fs.appendFileSync(output, "   consumes:\n");
       fs.appendFileSync(output, "    - application/json\n");
@@ -122,8 +123,69 @@ function appendDynamicPaths(protoObj){
       fs.appendFileSync(output, "     description: Error\n");
       fs.appendFileSync(output, "     schema:\n");
       fs.appendFileSync(output, "      $ref: \"#/definitions/ErrorResponse\"\n");
+
+      // Check if there is a request stream that has to be opened
+      var isRequestStream = protoObj.services[i].rpc[rpcName].request_stream;
+      if(isRequestStream){
+        appendOpenStreamPath(protoObj.services[i].name, rpcName);
+        appendCloseStreamPath(protoObj.services[i].name, rpcName);
+      }
     }
   }
+}
+
+function appendOpenStreamPath(grpcServiceName, rpcName){
+  fs.appendFileSync(output, " /" + grpcServiceName +
+  "/" + rpcName + "/" + "OpenStream" +":\n");
+
+  fs.appendFileSync(output, "  x-swagger-router-controller: " +
+  "gen_" + grpcServiceName + "\n");
+  fs.appendFileSync(output, "  post:\n");
+  fs.appendFileSync(output, "   description: Opens a Stream for gRPC-Service "+ rpcName +"\n");
+
+  fs.appendFileSync(output, "   operationId: "+ rpcName + "OpenStream" + "\n");
+  fs.appendFileSync(output, "   produces:\n");
+  fs.appendFileSync(output, "    - text/plain\n");
+  fs.appendFileSync(output, "   responses:\n");
+  fs.appendFileSync(output, "    200:\n");
+  fs.appendFileSync(output, "     description: Success\n");
+  fs.appendFileSync(output, "     schema:\n");
+  fs.appendFileSync(output, "      title: "+ rpcName + "OpenStreamId" +" \n");
+  fs.appendFileSync(output, "      type: string\n");
+  fs.appendFileSync(output, "    default:\n");
+  fs.appendFileSync(output, "     description: Error\n");
+  fs.appendFileSync(output, "     schema:\n");
+  fs.appendFileSync(output, "      $ref: \"#/definitions/ErrorResponse\"\n");
+}
+
+function appendCloseStreamPath(grpcServiceName, rpcName){
+  fs.appendFileSync(output, " /" + grpcServiceName +
+  "/" + rpcName + "/" + "CloseStream" +":\n");
+
+  fs.appendFileSync(output, "  x-swagger-router-controller: " +
+  "gen_" + grpcServiceName + "\n");
+  fs.appendFileSync(output, "  delete:\n");
+  fs.appendFileSync(output, "   parameters:\n");
+  fs.appendFileSync(output, "    - name: id\n");
+  fs.appendFileSync(output, "      in: query\n");
+  fs.appendFileSync(output, "      description: The StreamId to delete.\n");
+  fs.appendFileSync(output, "      type: string\n");
+  fs.appendFileSync(output, "   description: Deletes/closes a given Stream for gRPC-Service "
+    + rpcName +"\n");
+
+  fs.appendFileSync(output, "   operationId: "+ rpcName + "CloseStream" + "\n");
+  fs.appendFileSync(output, "   produces:\n");
+  fs.appendFileSync(output, "    - text/plain\n");
+  fs.appendFileSync(output, "   responses:\n");
+  fs.appendFileSync(output, "    200:\n");
+  fs.appendFileSync(output, "     description: Success\n");
+  fs.appendFileSync(output, "     schema:\n");
+  fs.appendFileSync(output, "      title: "+ rpcName + "CloseStreamResponse" +" \n");
+  fs.appendFileSync(output, "      type: string\n");
+  fs.appendFileSync(output, "    default:\n");
+  fs.appendFileSync(output, "     description: Error\n");
+  fs.appendFileSync(output, "     schema:\n");
+  fs.appendFileSync(output, "      $ref: \"#/definitions/ErrorResponse\"\n");
 }
 
 function appendStaticDefinitions(){
