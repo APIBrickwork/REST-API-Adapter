@@ -4,7 +4,7 @@ var protoDescriptor = grpc.load("./tester.proto");
 
 // TODO: Use environment variables
 var host = "0.0.0.0";
-var port = 8181;
+var port = process.env.LISTEN_PORT;
 
 var users = [];
 
