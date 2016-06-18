@@ -21,7 +21,6 @@ var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 /**
 * gRPC definitions
 */
-// TODO: Get this by the docker environment variables
 var grpcHost = process.env.API_HOST;
 var grpcPort = process.env.API_PORT;
 
@@ -73,7 +72,7 @@ function appendProtoVariables(protoObj){
 }
 
 function appendGrpcVariables(grpcService){
-  // TODO: Use the one given as docker environment variable
+
   fs.appendFileSync(output, "var grpcHost = \"" + grpcHost +"\";\n");
   fs.appendFileSync(output, "var grpcPort = " + grpcPort +";\n");
 

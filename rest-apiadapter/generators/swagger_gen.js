@@ -11,7 +11,6 @@ var util = require("util");
 /**
 * Project definitions
 */
-// TODO: Update after evaluation phase
 var output = "./swagger.yaml";
 var version = "1.0";
 var title = "gRPC-API-Adapter (REST)";
@@ -140,9 +139,7 @@ function appendStaticDefinitions(){
 function appendDynamicDefinitions(messages){
   for(var i=0;i<messages.length;i++){
     var messageName = messages[i].name;
-    console.log(messages[i]);
 
-    // TODO: Test recursively
     if(messages[i].messages.length > 0 ){
       appendDynamicDefinitions(messages[i].messages);
     }
