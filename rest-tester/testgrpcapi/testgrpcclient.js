@@ -12,8 +12,8 @@ var users = [{firstname: "Volde", lastname: "mort"},
 exports.sendNoStreamRequest = function(test){
 
   var httpOptions = {
-    host: "172.18.0.3",
-    port: 10010,
+    host: process.env.ADAPTER_HOST,
+    port: process.env.ADAPTER_PORT,
     path: '/TesterService/NoStream',
     method: 'POST',
     headers: {

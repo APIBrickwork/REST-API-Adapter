@@ -23,13 +23,13 @@ paths:
     description: Gets information for the specified ServiceRequestId.
     operationId: getSerReq
     produces:
-     - text/plain
+     - application/json
     responses:
      200:
       description: Success
       schema:
-       title: ServiceRequest
-       type: string
+       $ref: "#/definitions/ServiceRequestResponse"
+
      default:
       description: Error
       schema:
@@ -48,13 +48,12 @@ paths:
    consumes:
     - application/json
    produces:
-    - text/plain
+    - application/json
    responses:
     200:
      description: Success
      schema:
-      title: NoStreamRequestId
-      type: string
+      $ref: "#/definitions/ServiceRequestResponse"
     default:
      description: Error
      schema:
@@ -77,13 +76,12 @@ paths:
    consumes:
     - application/json
    produces:
-    - text/plain
+    - application/json
    responses:
     200:
      description: Success
      schema:
-      title: RequestStreamRequestId
-      type: string
+      $ref: "#/definitions/ServiceRequestResponse"
     default:
      description: Error
      schema:
@@ -94,13 +92,13 @@ paths:
    description: Opens a Stream for gRPC-Service RequestStream
    operationId: RequestStreamOpenStream
    produces:
-    - text/plain
+    - application/json
    responses:
     200:
      description: Success
      schema:
-      title: RequestStreamOpenStreamId
-      type: string
+      $ref: "#/definitions/ServiceRequestResponse"
+
     default:
      description: Error
      schema:
@@ -141,13 +139,12 @@ paths:
    consumes:
     - application/json
    produces:
-    - text/plain
+    - application/json
    responses:
     200:
      description: Success
      schema:
-      title: ResponseStreamRequestId
-      type: string
+      $ref: "#/definitions/ServiceRequestResponse"
     default:
      description: Error
      schema:
@@ -170,13 +167,12 @@ paths:
    consumes:
     - application/json
    produces:
-    - text/plain
+    - application/json
    responses:
     200:
      description: Success
      schema:
-      title: BidirectionalStreamRequestId
-      type: string
+      $ref: "#/definitions/ServiceRequestResponse"
     default:
      description: Error
      schema:
@@ -187,13 +183,13 @@ paths:
    description: Opens a Stream for gRPC-Service BidirectionalStream
    operationId: BidirectionalStreamOpenStream
    produces:
-    - text/plain
+    - application/json
    responses:
     200:
      description: Success
      schema:
-      title: BidirectionalStreamOpenStreamId
-      type: string
+      $ref: "#/definitions/ServiceRequestResponse"
+
     default:
      description: Error
      schema:
@@ -228,6 +224,14 @@ definitions:
    - message
   properties:
    message:
+    type: string
+ ServiceRequestResponse:
+  required:
+   - requestId
+  properties:
+   requestId:
+    type: string
+   streamId:
     type: string
  innerinnerMsg:
   properties:
