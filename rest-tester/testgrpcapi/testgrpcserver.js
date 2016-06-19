@@ -2,7 +2,6 @@
 var grpc = require("grpc");
 var protoDescriptor = grpc.load("./tester.proto");
 
-// TODO: Use environment variables
 var host = "0.0.0.0";
 var port = process.env.LISTEN_PORT;
 
