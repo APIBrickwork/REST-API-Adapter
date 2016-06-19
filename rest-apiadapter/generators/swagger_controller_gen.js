@@ -85,8 +85,6 @@ function appendGrpcVariables(grpcService){
 }
 
 function appendLocalVariables(){
-  fs.appendFileSync(output, "// v1 --> time-based uuid\n");
-  fs.appendFileSync(output, "var currentId = uuid.v1();\n");
   fs.appendFileSync(output, "var streamMap = new Map();\n");
   fs.appendFileSync(output, "var streamIdToServiceRequestMap = new Map();\n");
   fs.appendFileSync(output, "\n\n");
@@ -127,7 +125,9 @@ function appendRpcFunctionImpl(grpcService){
 }
 
 function appendRpcFunctionImplNoStream(grpcServiceName, rpcName, rpcProps){
-  fs.appendFileSync(output, "\t async.parallel([\n");
+  fs.appendFileSync(output, "\t// v1 --> time-based uuid\n");
+  fs.appendFileSync(output, "\tvar currentId = uuid.v1();\n");
+  fs.appendFileSync(output, "\tasync.parallel([\n");
   fs.appendFileSync(output, "\t\t// function 1: call of gRPC service\n");
   fs.appendFileSync(output, "\t\tfunction(callback){\n");
 
@@ -166,7 +166,8 @@ function appendRpcFunctionImplNoStream(grpcServiceName, rpcName, rpcProps){
   fs.appendFileSync(output, "\t\t}\n");
   // end of async.parallel
   fs.appendFileSync(output, "\t );\n\n");
-  fs.appendFileSync(output, "\tres.end(\"serviceRequestId = \" + currentId);\n");
+  fs.appendFileSync(output, "\tvar jsonRes = {\"requestId\": currentId, \"streamId\": \"\"}\n");
+	fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 }
 
 // TODO: Add logging for the below stuff
@@ -188,7 +189,8 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
   // TODO: Implement
   var lowerCaseRpcName = rpcName.charAt(0).toLowerCase() + rpcName.slice(1);
   var requestBodyString = "req.swagger.params." + rpcProps.request + ".value";
-
+  fs.appendFileSync(output, "\t// v1 --> time-based uuid\n");
+  fs.appendFileSync(output, "\tvar currentId = uuid.v1();\n");
   fs.appendFileSync(output, "\tvar call = "+ grpcServiceName + "stub." +
     lowerCaseRpcName + "("+ requestBodyString + ");\n\n");
 
@@ -213,8 +215,8 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
   fs.appendFileSync(output, "\t\tdb.set(currentId + \".status\", \"success\").value();\n");
   // end of call.on end
   fs.appendFileSync(output, "\t});\n");
-
-  fs.appendFileSync(output, "\tres.end(\"serviceRequestId = \" + currentId);\n");
+  fs.appendFileSync(output, "\tvar jsonRes = {\"requestId\": currentId, \"streamId\": \"\"}\n");
+	fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 }
 
 function appendRpcFunctionImplBidirectionalStream(rpcProps){
@@ -234,6 +236,8 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
   // TODO: Evaluate
   fs.appendFileSync(output, "exports." + rpcName + "OpenStream = function(req, res){\n");
 
+  fs.appendFileSync(output, "\t// v1 --> time-based uuid\n");
+  fs.appendFileSync(output, "\tvar currentId = uuid.v1();\n");
   fs.appendFileSync(output, "\tvar streamId = uuid.v1();\n\n");
 
   // In this case it's a bidirectional stream
@@ -283,8 +287,9 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
   fs.appendFileSync(output, "\tstreamMap.set(streamId, call);\n");
 
   fs.appendFileSync(output, "\tstreamIdToServiceRequestMap.set(streamId, currentId);\n");
-  fs.appendFileSync(output, "\tres.end(\"streamId = \" + streamId +"
-    + "\"\\nserviceRequestId = \" + currentId" +");\n");
+
+  fs.appendFileSync(output, "\tvar jsonRes = {\"requestId\": currentId, \"streamId\": streamId}\n");
+	fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 
   fs.appendFileSync(output, "}\n\n");
 }
