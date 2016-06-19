@@ -41,6 +41,6 @@ exports.sendNoStreamRequest = function(test){
     console.log("Error with request:\n" + err.message);
   });
 
-  req.write(request);
+  req.write(JSON.stringify(request));
   req.end();
 }
