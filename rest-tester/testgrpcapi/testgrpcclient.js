@@ -12,16 +12,19 @@ var users = [{firstname: "Volde", lastname: "mort"},
 exports.sendNoStreamRequest = function(test){
 
   var httpOptions = {
-    host: process.env.ADAPTER_HOST,
-    port: process.env.ADAPTER_PORT,
+    host: "172.18.0.3",
+    port: 10010,
     path: '/TesterService/NoStream',
-    method: 'POST'
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
   };
 
   var request =
   {
     values_to_use: [3,4],
-    type: protoDescriptor.CalculationEnum.MULTIPLICATION,
+    type: "MULTIPLICATION",
     info: {info: "teststring"}
   };
 
@@ -43,4 +46,7 @@ exports.sendNoStreamRequest = function(test){
 
   req.write(JSON.stringify(request));
   req.end();
+
+  // TODO: Do some assertions
+  test.done();
 }
