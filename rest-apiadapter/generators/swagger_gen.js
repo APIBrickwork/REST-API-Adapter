@@ -20,7 +20,7 @@ var port = process.env.REST_LISTEN_PORT;
 /**
 * Protobuf definitions
 */
-var protoFile = process.env.API_PROTO_PATH;
+var protoFile = "./tester.proto";
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 // Check if it was called as required of as main
@@ -75,13 +75,12 @@ function appendStaticPaths(){
   fs.appendFileSync(output, "    description: Gets information for the specified ServiceRequestId.\n");
   fs.appendFileSync(output, "    operationId: getSerReq\n");
   fs.appendFileSync(output, "    produces:\n");
-  fs.appendFileSync(output, "     - text/plain\n");
+  fs.appendFileSync(output, "     - application/json\n");
   fs.appendFileSync(output, "    responses:\n");
   fs.appendFileSync(output, "     200:\n");
   fs.appendFileSync(output, "      description: Success\n");
   fs.appendFileSync(output, "      schema:\n");
-  fs.appendFileSync(output, "       title: ServiceRequest\n");
-  fs.appendFileSync(output, "       type: string\n");
+  fs.appendFileSync(output, "       $ref: \"#/definitions/ServiceRequestResponse\"\n\n");
   fs.appendFileSync(output, "     default:\n");
   fs.appendFileSync(output, "      description: Error\n");
   fs.appendFileSync(output, "      schema:\n");
@@ -121,13 +120,12 @@ function appendDynamicPaths(protoObj){
       fs.appendFileSync(output, "   consumes:\n");
       fs.appendFileSync(output, "    - application/json\n");
       fs.appendFileSync(output, "   produces:\n");
-      fs.appendFileSync(output, "    - text/plain\n");
+      fs.appendFileSync(output, "    - application/json\n");
       fs.appendFileSync(output, "   responses:\n");
       fs.appendFileSync(output, "    200:\n");
       fs.appendFileSync(output, "     description: Success\n");
       fs.appendFileSync(output, "     schema:\n");
-      fs.appendFileSync(output, "      title: " + rpcName + "RequestId\n");
-      fs.appendFileSync(output, "      type: string\n");
+      fs.appendFileSync(output, "      $ref: \"#/definitions/ServiceRequestResponse\"\n");
       fs.appendFileSync(output, "    default:\n");
       fs.appendFileSync(output, "     description: Error\n");
       fs.appendFileSync(output, "     schema:\n");
@@ -152,13 +150,12 @@ function appendOpenStreamPath(grpcServiceName, rpcName){
 
   fs.appendFileSync(output, "   operationId: "+ rpcName + "OpenStream" + "\n");
   fs.appendFileSync(output, "   produces:\n");
-  fs.appendFileSync(output, "    - text/plain\n");
+  fs.appendFileSync(output, "    - application/json\n");
   fs.appendFileSync(output, "   responses:\n");
   fs.appendFileSync(output, "    200:\n");
   fs.appendFileSync(output, "     description: Success\n");
   fs.appendFileSync(output, "     schema:\n");
-  fs.appendFileSync(output, "      title: "+ rpcName + "OpenStreamId" +" \n");
-  fs.appendFileSync(output, "      type: string\n");
+  fs.appendFileSync(output, "      $ref: \"#/definitions/ServiceRequestResponse\"\n\n");
   fs.appendFileSync(output, "    default:\n");
   fs.appendFileSync(output, "     description: Error\n");
   fs.appendFileSync(output, "     schema:\n");
@@ -202,6 +199,14 @@ function appendStaticDefinitions(){
   fs.appendFileSync(output, "   - message\n");
   fs.appendFileSync(output, "  properties:\n");
   fs.appendFileSync(output, "   message:\n");
+  fs.appendFileSync(output, "    type: string\n");
+  fs.appendFileSync(output, " ServiceRequestResponse:\n");
+  fs.appendFileSync(output, "  required:\n");
+  fs.appendFileSync(output, "   - requestId\n");
+  fs.appendFileSync(output, "  properties:\n");
+  fs.appendFileSync(output, "   requestId:\n");
+  fs.appendFileSync(output, "    type: string\n");
+  fs.appendFileSync(output, "   streamId:\n");
   fs.appendFileSync(output, "    type: string\n");
 }
 
