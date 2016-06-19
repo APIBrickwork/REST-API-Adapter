@@ -20,6 +20,7 @@ var port = process.env.REST_LISTEN_PORT;
 /**
 * Protobuf definitions
 */
+// TODO: Replace with
 var protoFile = process.env.API_PROTO_PATH;
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
@@ -98,8 +99,17 @@ function appendDynamicPaths(protoObj){
       fs.appendFileSync(output, "  x-swagger-router-controller: " +
       "gen_" + protoObj.services[i].name + "\n");
 
+      // Check if there is a request stream that has to be opened
+      var isRequestStream = protoObj.services[i].rpc[rpcName].request_stream;
+
       fs.appendFileSync(output, "  post:\n");
       fs.appendFileSync(output, "   parameters:\n");
+      if(isRequestStream){
+        fs.appendFileSync(output, "    - name: id\n");
+        fs.appendFileSync(output, "      in: query\n");
+        fs.appendFileSync(output, "      description: The ServiceRequestId to query for.\n");
+        fs.appendFileSync(output, "      type: string\n");
+      }
       var requestType = protoObj.services[i].rpc[rpcName].request;
       var swaggerRef = getSwaggerRefDefinition(requestType);
       fs.appendFileSync(output, "    - name: "+ requestType +"\n");
@@ -124,8 +134,6 @@ function appendDynamicPaths(protoObj){
       fs.appendFileSync(output, "     schema:\n");
       fs.appendFileSync(output, "      $ref: \"#/definitions/ErrorResponse\"\n");
 
-      // Check if there is a request stream that has to be opened
-      var isRequestStream = protoObj.services[i].rpc[rpcName].request_stream;
       if(isRequestStream){
         appendOpenStreamPath(protoObj.services[i].name, rpcName);
         appendCloseStreamPath(protoObj.services[i].name, rpcName);
