@@ -1,6 +1,7 @@
 "use strict";
 var testCase = require("nodeunit").testCase;
 var async = require("async");
+var grpc = require("grpc");
 const http = require("http");
 var _ = require('lodash');
 var protoDescriptor = grpc.load("./tester.proto");
