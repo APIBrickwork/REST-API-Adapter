@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
  version: "1.0"
  title: gRPC-API-Adapter (REST)
-host: localhost:8080
+host: localhost:10010
 basePath: /
 schemes:
  - http
@@ -63,6 +63,10 @@ paths:
   x-swagger-router-controller: gen_TesterService
   post:
    parameters:
+    - name: id
+      in: query
+      description: The ServiceRequestId to query for.
+      type: string
     - name: AddUserRequest
       in: body
       required: true
@@ -95,7 +99,7 @@ paths:
     200:
      description: Success
      schema:
-      title: RequestStreamOpenStreamId 
+      title: RequestStreamOpenStreamId
       type: string
     default:
      description: Error
@@ -117,7 +121,7 @@ paths:
     200:
      description: Success
      schema:
-      title: RequestStreamCloseStreamResponse 
+      title: RequestStreamCloseStreamResponse
       type: string
     default:
      description: Error
@@ -152,6 +156,10 @@ paths:
   x-swagger-router-controller: gen_TesterService
   post:
    parameters:
+    - name: id
+      in: query
+      description: The ServiceRequestId to query for.
+      type: string
     - name: GreetingRequest
       in: body
       required: true
@@ -184,7 +192,7 @@ paths:
     200:
      description: Success
      schema:
-      title: BidirectionalStreamOpenStreamId 
+      title: BidirectionalStreamOpenStreamId
       type: string
     default:
      description: Error
@@ -206,7 +214,7 @@ paths:
     200:
      description: Success
      schema:
-      title: BidirectionalStreamCloseStreamResponse 
+      title: BidirectionalStreamCloseStreamResponse
       type: string
     default:
      description: Error

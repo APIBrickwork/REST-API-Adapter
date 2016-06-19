@@ -20,7 +20,6 @@ var port = process.env.REST_LISTEN_PORT;
 /**
 * Protobuf definitions
 */
-// TODO: Replace with
 var protoFile = process.env.API_PROTO_PATH;
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
