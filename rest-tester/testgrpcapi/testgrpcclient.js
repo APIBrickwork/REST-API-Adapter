@@ -37,5 +37,6 @@ exports.sendNoStreamRequest = function(test){
     });
   });
 
-
+  req.write(request);
+  req.end();
 }
