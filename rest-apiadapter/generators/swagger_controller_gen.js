@@ -112,7 +112,7 @@ function appendRpcFunctionImpl(grpcService){
         }else if(!usesRequestStream && usesResponseStream){
           appendRpcFunctionImplResponseStream(grpcService.name, rpcName, grpcService.rpc[rpcName]);
         }else{
-          appendRpcFunctionImplBidirectionalStream();
+          appendRpcFunctionImplBidirectionalStream(grpcService.rpc[rpcName]);
         }
       }
 
@@ -192,6 +192,10 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
   fs.appendFileSync(output, "\tvar call = "+ grpcServiceName + "stub." +
     lowerCaseRpcName + "("+ requestBodyString + ");\n\n");
 
+  fs.appendFileSync(output, "\tvar jsonRequest = {status:\"pending\", service:\"" +
+    rpcName + "\", output:\"\"};\n");
+  fs.appendFileSync(output, "\tdb.set(currentId, jsonRequest).value();\n\n");
+
   fs.appendFileSync(output, "\tcall.on(\"data\", function(data){\n");
 
   fs.appendFileSync(output, "\t\tdb.set(currentId + \".status\", \"pending\").value();\n");
@@ -210,10 +214,20 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
   // end of call.on end
   fs.appendFileSync(output, "\t});\n");
 
+  fs.appendFileSync(output, "\tres.end(\"serviceRequestId = \" + currentId);\n");
 }
 
-function appendRpcFunctionImplBidirectionalStream(){
-  // TODO: Implement
+function appendRpcFunctionImplBidirectionalStream(rpcProps){
+  // TODO: Evaluate
+  // TODO: Necessary to catch if call is not available???
+  // TODO: All the streaming function should just return success or error
+  // message
+  fs.appendFileSync(output, "\tvar streamId = req.swagger.params.id.value;\n");
+
+  var requestBodyString = "req.swagger.params." + rpcProps.request + ".value";
+  fs.appendFileSync(output, "\tvar call = streamMap.get(streamId);\n");
+
+  fs.appendFileSync(output, "\tcall.write("+ requestBodyString + ");\n");
 }
 
 function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
@@ -228,6 +242,21 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
   if(usesResponseStream){
     fs.appendFileSync(output, "\tvar call = "+ grpcServiceName + "stub." +
       lowerCaseRpcName + "();\n\n");
+    fs.appendFileSync(output, "\tcall.on(\"data\", function(data){\n");
+
+    fs.appendFileSync(output, "\t\tdb.set(currentId + \".status\", \"pending\").value();\n");
+    // TODO: Think about how to append multiple outputs!!
+    fs.appendFileSync(output, "\t\tdb.set(currentId + \".output\", data).value();\n");
+    // end of call.on data
+    fs.appendFileSync(output, "\t});\n");
+    fs.appendFileSync(output, "\tcall.on(\"status\", function(status){\n");
+    fs.appendFileSync(output, "\t\tconsole.log(\"Status: \" + JSON.stringify(status));\n");
+    // end of call.on status
+    fs.appendFileSync(output, "\t});\n");
+    fs.appendFileSync(output, "\tcall.on(\"end\", function(){\n");
+    fs.appendFileSync(output, "\t\tdb.set(currentId + \".status\", \"success\").value();\n");
+    // end of call.on end
+    fs.appendFileSync(output, "\t});\n");
   }
   else{
     fs.appendFileSync(output, "\tvar call = "+ grpcServiceName + "stub." +
@@ -253,10 +282,10 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
   // Add stream to map
   fs.appendFileSync(output, "\tstreamMap.set(streamId, call);\n");
 
+  fs.appendFileSync(output, "\tstreamIdToServiceRequestMap.set(streamId, currentId);\n");
   fs.appendFileSync(output, "\tres.end(\"streamId = \" + streamId +"
     + "\"\\nserviceRequestId = \" + currentId" +");\n");
 
-  fs.appendFileSync(output, "\tstreamIdToServiceRequestMap.set(streamId, currentId);\n");
   fs.appendFileSync(output, "}\n\n");
 }
 
