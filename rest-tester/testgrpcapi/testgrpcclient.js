@@ -37,6 +37,10 @@ exports.sendNoStreamRequest = function(test){
     });
   });
 
+  req.on("error", (err) => {
+    console.log("Error with request:\n" + err.message);
+  });
+
   req.write(request);
   req.end();
 }
