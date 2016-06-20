@@ -14,7 +14,8 @@ function getSerReq(req, res){
   if(db.has(id).value()){
     console.log("Found it.");
     var serReq = db.get(id).value();
-    res.end(serReq);
+    var jsonRes = JSON.parse(serReq);
+    res.json(jsonRes);
   }
   else{
     console.log("Couldn't find it.");
