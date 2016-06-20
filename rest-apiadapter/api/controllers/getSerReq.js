@@ -19,6 +19,7 @@ function getSerReq(req, res){
   }
   else{
     console.log("Couldn't find it.");
+    // TODO: Evaluate if this is the right way to do this. Maybe add error msg??
     var emptyJson = {};
     var jsonRes = JSON.parse(emptyJson);
     res.json(jsonRes);
