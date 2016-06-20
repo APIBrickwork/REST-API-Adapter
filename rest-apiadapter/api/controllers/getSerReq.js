@@ -19,6 +19,8 @@ function getSerReq(req, res){
   }
   else{
     console.log("Couldn't find it.");
-    res.end("Could not find ServiceRequest with id = " + id);
+    var emptyJson = {};
+    var jsonRes = JSON.parse(emptyJson);
+    res.json(jsonRes);
   }
 }
