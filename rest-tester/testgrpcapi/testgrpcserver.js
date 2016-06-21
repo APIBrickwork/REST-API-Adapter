@@ -3,7 +3,10 @@ var grpc = require("grpc");
 var protoDescriptor = grpc.load("./tester.proto");
 
 var host = "0.0.0.0";
-var port = process.env.LISTEN_PORT;
+var port = 8181;
+if(!(typeof process.env.LISTEN_PORT === "undefined")){
+  port = process.env.LISTEN_PORT;
+}
 
 var users = [];
 
