@@ -16,7 +16,8 @@ var version = "1.0";
 var title = "gRPC-API-Adapter (REST)";
 var host = "localhost";
 var port = 10010;
-if(!(process.env.REST_LISTEN_PORT === "undefined")){
+
+if(!(typeof process.env.REST_LISTEN_PORT === 'undefined')){
   port = process.env.REST_LISTEN_PORT;
 }
 
@@ -24,7 +25,8 @@ if(!(process.env.REST_LISTEN_PORT === "undefined")){
 /**
 * Protobuf definitions
 */
-var protoFile = process.env.API_PROTO_PATH;
+// TODO: process.env.API_PROTO_PATH
+var protoFile = "./tester.proto";
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 // Check if it was called as required of as main

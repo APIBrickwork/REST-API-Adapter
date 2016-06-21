@@ -233,18 +233,21 @@ definitions:
     type: string
    streamId:
     type: string
+ ServiceRequestInfo:
+  required:
+   - status
+   - service
+  properties:
+   status:
+    type: string
+   service:
+    type: string
+   output:
+    type: object
  innerinnerMsg:
   properties:
    testinfo:
     type: string
- ServiceRequestInfo:
-  properties:
-    status:
-      type: string
-    service:
-      type: string
-    output:
-      type: object   
  innerMsg:
   properties:
    info:
