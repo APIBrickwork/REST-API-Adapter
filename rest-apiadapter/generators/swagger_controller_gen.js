@@ -179,7 +179,7 @@ function appendRpcFunctionImplRequestStream(rpcProps){
   fs.appendFileSync(output, "\tvar streamId = req.swagger.params.id.value;\n");
   var requestBodyString = "req.swagger.params." + rpcProps.request + ".value";
   fs.appendFileSync(output, "\tvar call = streamMap.get(streamId);\n");
-  fs.appendFileSync(output, "\tconsole.log(\"streamId = \" + streamId + \" | body = \"" +requestBodyString + ");\n");
+  fs.appendFileSync(output, "\tconsole.log(\"streamId = \" + streamId + \" | body = \" + " + requestBodyString + ");\n");
 
   fs.appendFileSync(output, "\tcall.write("+ requestBodyString + ");\n");
 
