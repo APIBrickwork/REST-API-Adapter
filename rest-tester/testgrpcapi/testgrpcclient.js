@@ -6,47 +6,106 @@ const http = require("http");
 var _ = require('lodash');
 var protoDescriptor = grpc.load("./tester.proto");
 
-var users = [{firstname: "Volde", lastname: "mort"},
-  {firstname: "Heisen", lastname: "berg"}];
+var restHost = process.env.ADAPTER_HOST;
+var restPort = process.env.ADAPTER_PORT;
 
-exports.sendNoStreamRequest = function(test){
+/**
+ * Test expected result section
+ */
+var successString = "success";
 
-  var httpOptions = {
-    host: process.env.ADAPTER_HOST,
-    port: process.env.ADAPTER_PORT,
-    path: '/TesterService/NoStream',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
+/**
+ * Response messages section
+ */
+var requestId = "";
+var serviceRequestInfo;
 
-  var request =
-  {
-    values_to_use: [3,4],
-    type: "MULTIPLICATION",
-    info: {info: "teststring"}
-  };
+exports.sendNoStreamRequest = function (test) {
 
-  console.log("Using request:\n" + JSON.stringify(request));
+	var httpOptions = {
+		host: restHost,
+		port: restPort,
+		path: '/TesterService/NoStream',
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	};
 
-  var req = http.request(httpOptions, (res) => {
-    res.setEncoding("utf8");
-    res.on("data", (data) => {
-      console.log("Data: \n" + data);
-    });
-    res.on("end", () =>{
-      console.log("End: \n");
-    });
-  });
+	var requestNoStream = {
+		values_to_use: [3, 4],
+		type: "MULTIPLICATION",
+		info: {
+			info: "teststring"
+		}
+	};
 
-  req.on("error", (err) => {
-    console.log("Error with request:\n" + err.message);
-  });
+	var expectedResult = 12;
 
-  req.write(JSON.stringify(request));
-  req.end();
+	async.series([function (callback) {
 
-  // TODO: Do some assertions
-  test.done();
+			var httpRequestNoStream = http.request(httpOptions, (res) => {
+
+				res.setEncoding("utf8");
+				res.on("data", (data) => {
+					console.log("Data: \n" + data);
+					var jsonResp = JSON.parse(data);
+
+					requestId = jsonResp.requestId;
+
+					console.log("Received requestId = " + requestId);
+					callback();
+				});
+				res.on("end", () => {
+					console.log("End: \n");
+				});
+			});
+
+			httpRequestNoStream.on("error", (err) => {
+				console.log("Error with request:\n" + err.message);
+			});
+
+			httpRequestNoStream.write(JSON.stringify(requestNoStream));
+			httpRequestNoStream.end();
+
+		},
+		function (callback) {
+			var httpOptions = {
+				host: restHost,
+				port: restPort,
+				path: '/getServiceRequest/?id=' + requestId,
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			};
+
+			var httpRequestStatus = http.request(httpOptions, (res) => {
+				res.setEncoding("utf8");
+				res.on("data", (data) => {
+					console.log("Data: \n" + data);
+					serviceRequestInfo = JSON.parse(data);
+					callback();
+				});
+				res.on("end", () => {
+					console.log("End: \n");
+				});
+			});
+
+			httpRequestStatus.on("error", (err) => {
+				console.log("Error with request:\n" + err.message);
+			});
+
+			httpRequestStatus.end();
+		}
+	], function (err) {
+		// every task finished.
+		test.equals(serviceRequestInfo.status, successString, "Expected status " + successString +
+			"but was " + serviceRequestInfo.status);
+		test.equals(serviceRequestInfo.service, "NoStream", "Expected service NoStream but was " +
+			serviceRequestInfo.service);
+		test.equals(serviceRequestInfo.output.map.MULTIPLICATION, expectedResult, "Expected result " +
+			expectedResult + " but was " + serviceRequestInfo.output.map.MULTIPLICATION);
+		test.done();
+	});
 }
