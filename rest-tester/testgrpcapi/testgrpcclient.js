@@ -54,6 +54,7 @@ exports.sendNoStreamRequest = function (test) {
 					requestId = jsonResp.requestId;
 
 					console.log("Received requestId = " + requestId);
+          sleepFor(5000);
 					callback();
 				});
 				res.on("end", () => {
@@ -108,4 +109,9 @@ exports.sendNoStreamRequest = function (test) {
 			expectedResult + " but was " + serviceRequestInfo.output.map.MULTIPLICATION);
 		test.done();
 	});
+}
+
+function sleepFor(duration){
+  var now = new Date().getTime();
+  while(new Date().getTime() < now + duration){}
 }
