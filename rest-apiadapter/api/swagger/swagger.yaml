@@ -28,7 +28,7 @@ paths:
      200:
       description: Success
       schema:
-       $ref: "#/definitions/ServiceRequestResponse"
+       $ref: "#/definitions/ServiceRequestInfo"
 
      default:
       description: Error
@@ -237,6 +237,14 @@ definitions:
   properties:
    testinfo:
     type: string
+ ServiceRequestInfo:
+  properties:
+    status:
+      type: string
+    service:
+      type: string
+    output:
+      type: object   
  innerMsg:
   properties:
    info:

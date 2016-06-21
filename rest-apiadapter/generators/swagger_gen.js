@@ -15,7 +15,11 @@ var output = "./swagger.yaml";
 var version = "1.0";
 var title = "gRPC-API-Adapter (REST)";
 var host = "localhost";
-var port = process.env.REST_LISTEN_PORT;
+var port = 10010;
+if(!(process.env.REST_LISTEN_PORT === "undefined")){
+  port = process.env.REST_LISTEN_PORT;
+}
+
 
 /**
 * Protobuf definitions
@@ -80,7 +84,7 @@ function appendStaticPaths(){
   fs.appendFileSync(output, "     200:\n");
   fs.appendFileSync(output, "      description: Success\n");
   fs.appendFileSync(output, "      schema:\n");
-  fs.appendFileSync(output, "       $ref: \"#/definitions/ServiceRequestResponse\"\n\n");
+  fs.appendFileSync(output, "       $ref: \"#/definitions/ServiceRequestInfo\"\n\n");
   fs.appendFileSync(output, "     default:\n");
   fs.appendFileSync(output, "      description: Error\n");
   fs.appendFileSync(output, "      schema:\n");
@@ -208,6 +212,17 @@ function appendStaticDefinitions(){
   fs.appendFileSync(output, "    type: string\n");
   fs.appendFileSync(output, "   streamId:\n");
   fs.appendFileSync(output, "    type: string\n");
+  fs.appendFileSync(output, " ServiceRequestInfo:\n");
+  fs.appendFileSync(output, "  required:\n");
+  fs.appendFileSync(output, "   - status\n");
+  fs.appendFileSync(output, "   - service\n");
+  fs.appendFileSync(output, "  properties:\n");
+  fs.appendFileSync(output, "   status:\n");
+  fs.appendFileSync(output, "    type: string\n");
+  fs.appendFileSync(output, "   service:\n");
+  fs.appendFileSync(output, "    type: string\n");
+  fs.appendFileSync(output, "   output:\n");
+  fs.appendFileSync(output, "    type: object\n");
 }
 
 function appendDynamicDefinitions(messages){

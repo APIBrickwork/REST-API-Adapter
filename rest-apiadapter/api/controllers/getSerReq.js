@@ -18,7 +18,7 @@ function getSerReq(req, res){
   }
   else{
     console.log("Couldn't find it.");
-    // TODO: Evaluate if this is the right way to do this. Maybe add error msg??re
+    // TODO: Test if that works
     var notFound = "Not found.";
     var emptyJson = {
       service: notFound,
