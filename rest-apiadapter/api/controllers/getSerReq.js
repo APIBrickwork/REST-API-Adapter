@@ -18,14 +18,12 @@ function getSerReq(req, res){
   }
   else{
     console.log("Couldn't find it.");
-    // TODO: Test if that works
-    var notFound = "Not found.";
-    var emptyJson = {
+    var notFound = "Not found";
+    var jsonRes = {
       service: notFound,
       status: notFound,
-      output: ""
+      output: notFound
     };
-    var jsonRes = JSON.parse(emptyJson);
     res.json(jsonRes);
   }
 }
