@@ -240,8 +240,7 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
   fs.appendFileSync(output, "\tvar currentId = uuid.v1();\n");
   fs.appendFileSync(output, "\tvar streamId = uuid.v1();\n\n");
 
-  fs.appendFileSync(output, "\tconsole.log(\"Created new Ids serviceRequestId = \"
-  + currentId + \" | streamId = \" + streamId)");
+  fs.appendFileSync(output, "\tconsole.log(\"Created new Ids serviceRequestId = \" + currentId + \" | streamId = \" + streamId)");
 
   // In this case it's a bidirectional stream
   var lowerCaseRpcName = rpcName.charAt(0).toLowerCase() + rpcName.slice(1);
