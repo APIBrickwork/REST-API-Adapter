@@ -275,12 +275,10 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
       fs.appendFileSync(output, "\t\tif(err){\n");
       fs.appendFileSync(output, "\t\t\tdb.set(currentId + \".status\", \"error\").value();\n");
       fs.appendFileSync(output, "\t\t\tdb.set(currentId + \".output\", err).value();\n");
-      fs.appendFileSync(output, "\t\t\tcallback(err);\n");
       // end of if
       fs.appendFileSync(output, "\t\t} else{\n");
       fs.appendFileSync(output, "\t\t\tdb.set(currentId + \".status\", \"success\").value();\n");
       fs.appendFileSync(output, "\t\t\tdb.set(currentId + \".output\", res).value();\n");
-      fs.appendFileSync(output, "\t\t\tcallback();\n");
       // end of else
       fs.appendFileSync(output, "\t\t}\n" + "\t\t}\n" + "\t);\n\n");
   }
