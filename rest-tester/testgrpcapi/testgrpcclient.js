@@ -68,7 +68,7 @@ exports.sendNoStreamRequest = function (test) {
 					callback();
 				});
 				res.on("end", () => {
-					console.log("End: \n");
+					console.log("End \n");
 				});
 			});
 
@@ -101,7 +101,7 @@ exports.sendNoStreamRequest = function (test) {
 					callback();
 				});
 				res.on("end", () => {
-					console.log("End: \n");
+					console.log("End \n");
 				});
 			});
 
@@ -155,7 +155,7 @@ exports.sendRequestStreamRequest = function (test) {
 						callback();
 					});
 					res.on("end", () => {
-						console.log("End: \n");
+						console.log("End \n");
 					});
 				});
 
@@ -188,7 +188,7 @@ exports.sendRequestStreamRequest = function (test) {
 						callback();
 					});
 					res.on("end", () => {
-						console.log("End: \n");
+						console.log("End \n");
 					});
 				});
 
@@ -221,7 +221,7 @@ exports.sendRequestStreamRequest = function (test) {
 						callback();
 					});
 					res.on("end", () => {
-						console.log("End: \n");
+						console.log("End \n");
 					});
 				});
 
@@ -253,7 +253,7 @@ exports.sendRequestStreamRequest = function (test) {
 						callback();
 					});
 					res.on("end", () => {
-						console.log("End: \n");
+						console.log("End \n");
 					});
 				});
 
@@ -285,7 +285,7 @@ exports.sendRequestStreamRequest = function (test) {
 						callback();
 					});
 					res.on("end", () => {
-						console.log("End: \n");
+						console.log("End \n");
 					});
 				});
 
@@ -303,7 +303,6 @@ exports.sendRequestStreamRequest = function (test) {
 			test.equals(serviceRequestInfo.service, "RequestStream", "Expected service NoStream but was " +
 				serviceRequestInfo.service);
 			var actualQty = parseInt(serviceRequestInfo.output.qty);
-			console.log("acutalQty = " + (typeof actualQty));
 			var userQtyExpected = 2;
 			test.equals(actualQty, userQtyExpected, "Expected user qty " +
 				userQtyExpected + " but was " + actualQty);
