@@ -94,9 +94,7 @@ function appendRpcFunctionImpl(grpcService){
   for(var rpcName in grpcService.rpc){
     var usesRequestStream = false;
     var usesResponseStream = false;
-    // TODO: Distinguish between no stream, client stream, server stream and both stream!!
-    // TODO: Maybe implement that as soon as test environment is set up
-    // TODO: Could be enough to implement without stream for the first local tests
+
     fs.appendFileSync(output, "exports." + rpcName + " = function(req, res){\n");
       if(grpcService.rpc.hasOwnProperty(rpcName)){
 
@@ -182,6 +180,9 @@ function appendRpcFunctionImplRequestStream(rpcProps){
   fs.appendFileSync(output, "\tconsole.log(\"streamId = \" + streamId + \" | body = \" + JSON.stringify(" + requestBodyString + "));\n");
 
   fs.appendFileSync(output, "\tcall.write("+ requestBodyString + ");\n");
+  fs.appendFileSync(output, "\tvar currentId = streamIdToServiceRequestMap.get(streamId);\n");
+  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId, streamId: streamId}\n");
+	fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 
 }
 
@@ -230,6 +231,9 @@ function appendRpcFunctionImplBidirectionalStream(rpcProps){
   fs.appendFileSync(output, "\tvar call = streamMap.get(streamId);\n");
 
   fs.appendFileSync(output, "\tcall.write("+ requestBodyString + ");\n");
+  fs.appendFileSync(output, "\tvar currentId = streamIdToServiceRequestMap.get(streamId);\n");
+  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId, streamId: streamId}\n");
+  fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 }
 
 function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
@@ -304,5 +308,6 @@ function appendCloseStreamFunction(rpcName){
   fs.appendFileSync(output, "\tcall.end();\n");
   fs.appendFileSync(output, "\tstreamMap.delete(streamId);\n");
   fs.appendFileSync(output, "\tstreamIdToServiceRequestMap.delete(streamId);\n");
+  fs.appendFileSync(output, "\tres.end(\"Success\");\n");
   fs.appendFileSync(output, "}\n\n");
 }
