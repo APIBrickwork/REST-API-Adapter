@@ -9,8 +9,6 @@ services:
       - "8181"
     environment:
       LISTEN_PORT: 8181
-    volumes:
-      - /api
     command: node testgrpcserver.js
 
   restapiadapter:

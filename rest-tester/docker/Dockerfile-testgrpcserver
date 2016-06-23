@@ -5,6 +5,8 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git
 
+VOLUME /api
+
 # Add main.proto to api folder
 COPY ./tester.proto /api/main.proto
 
