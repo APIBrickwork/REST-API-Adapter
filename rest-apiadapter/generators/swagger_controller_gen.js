@@ -196,7 +196,7 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
     lowerCaseRpcName + "("+ requestBodyString + ");\n");
   fs.appendFileSync(output, "\tvar dataCounter = 0;\n\n");
   fs.appendFileSync(output, "\tvar jsonRequest = {status:\"pending\", service:\"" +
-    rpcName + "\", output:\"\"};\n");
+    rpcName + "\", output:[]};\n");
   fs.appendFileSync(output, "\tdb.set(currentId, jsonRequest).value();\n\n");
 
   fs.appendFileSync(output, "\tcall.on(\"data\", function(data){\n");
