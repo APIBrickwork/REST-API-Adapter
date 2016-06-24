@@ -223,7 +223,7 @@ function appendStaticDefinitions(){
   fs.appendFileSync(output, "   service:\n");
   fs.appendFileSync(output, "    type: string\n");
   fs.appendFileSync(output, "   output:\n");
-  fs.appendFileSync(output, "    type: [string, object]\n");
+  fs.appendFileSync(output, "    type: [string, object, array]\n");
 }
 
 function appendDynamicDefinitions(messages){
