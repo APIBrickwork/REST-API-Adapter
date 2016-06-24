@@ -206,7 +206,9 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
   fs.appendFileSync(output, "\t\tvar dataObj = {};\n");
   fs.appendFileSync(output, "\t\tdataObj[\"data\" + dataCounter] = data;\n");
 
-  fs.appendFileSync(output, "\t\tdb.set(currentId + \".output\", dataObj).value();\n");
+  //fs.appendFileSync(output, "\t\tdb.set(currentId + \".output\", dataObj).value();\n");
+  fs.appendFileSync(output, "\t\tdb.get(currentId + \".output\").push(dataObj).value();\n");
+
   fs.appendFileSync(output, "\t\tdataCounter++;\n");
   // end of call.on data
   fs.appendFileSync(output, "\t});\n");
