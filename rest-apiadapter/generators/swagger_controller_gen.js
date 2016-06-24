@@ -194,19 +194,18 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
   fs.appendFileSync(output, "\tvar currentId = uuid.v4();\n");
   fs.appendFileSync(output, "\tvar call = "+ grpcServiceName + "stub." +
     lowerCaseRpcName + "("+ requestBodyString + ");\n");
-  //fs.appendFileSync(output, "\tvar dataCounter = 0;\n\n");
+  fs.appendFileSync(output, "\tvar dataCounter = 0;\n\n");
   fs.appendFileSync(output, "\tvar jsonRequest = {status:\"pending\", service:\"" +
     rpcName + "\", output:\"\"};\n");
   fs.appendFileSync(output, "\tdb.set(currentId, jsonRequest).value();\n\n");
 
   fs.appendFileSync(output, "\tcall.on(\"data\", function(data){\n");
-  fs.appendFileSync(output, "\t\tdb.read();\n");
+
   fs.appendFileSync(output, "\t\tdb.set(currentId + \".status\", \"pending\").value();\n");
   // TODO: Think about how to append multiple outputs!!
-  //fs.appendFileSync(output, "\t\tvar appendedData = db.get(currentId);\n");
-  //fs.appendFileSync(output, "\t\tappendedData.output[\"data\" + dataCounter] = data;\n");
-  fs.appendFileSync(output, "\t\tdb.get(currentId + \".output\").push(data).value();\n");
-  //fs.appendFileSync(output, "\t\tdataCounter++;\n");
+  fs.appendFileSync(output, "\t\tvar dataKey = \"data\" + dataCounter;\n");
+  fs.appendFileSync(output, "\t\tdb.set(currentId + \".output\", {dataKey: data}).value();\n");
+  fs.appendFileSync(output, "\t\tdataCounter++;\n");
   // end of call.on data
   fs.appendFileSync(output, "\t});\n");
 
