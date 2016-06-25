@@ -47,10 +47,6 @@ echo "### Copying Swagger Controller Implementation files to directory $SCRIPTPA
 cd $SCRIPTPATH$generatorPath
 cp ./gen_*.js $SCRIPTPATH$swaggerControllerPath
 
-echo "### Creating folder html"
-cd $SCRIPTPATH
-mkdir html
-
 echo "### Generating HTML representation of Swagger Specification from $swaggerYamlPath"
 cd $SCRIPTPATH
 if cmd_exists bootprint; then
@@ -65,8 +61,6 @@ else
   echo "ERROR: command bootprint could not be found"
   echo "Skipping Swagger to HTML process"
 fi
-
-
 
 echo "### Waiting for ${ADAPTER_HOST}:${ADAPTER_PORT} to get ready..."
 while ! nc -vz ${API_HOST} ${API_PORT}
