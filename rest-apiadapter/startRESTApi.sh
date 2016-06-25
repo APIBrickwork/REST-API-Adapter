@@ -9,9 +9,10 @@ swaggerYamlPath=/api/swagger
 swaggerControllerPath=/api/controllers
 generatorPath=/generators
 
-commandNameBootprint="bootprint"
-commandNameBootprintSwagger="bootprint-swagger"
-commandNameInlineHtml="html-inline"
+# Function to test if a given command exists
+cmd_exists () {
+ type "$1" &> /dev/null;
+}
 
 
 echo "### Removing old *.yaml files from directory $SCRIPTPATH$swaggerYamlPath"
@@ -52,19 +53,17 @@ mkdir html
 
 echo "### Generating HTML representation of Swagger Specification from $swaggerYamlPath"
 cd $SCRIPTPATH
-if ! type "$commandNameBootprint" > /dev/null; then
-  if !type "$commandNameBootprintSwagger" > /dev/null; then
-    if !type "$commandNameInlineHtml" > /dev/null; then
-      bootprint swagger ./api/swagger/swagger.yaml html
-      html-inline -i ./html/index.html -o ./html/inline-index.html
-    else
-      echo "ERROR: $commandNameInlineHtml could not be found"
-    fi
+if cmd_exists bootprint; then
+  if cmd_exists html-inline; then
+    bootprint swagger ./api/swagger/swagger.yaml html
+    html-inline -i ./html/index.html -o ./html/inline-index.html
   else
-    echo "ERROR: $commandNameBootprintSwagger could not be found"
+    echo "ERROR: command html-inline could not be found"
+    echo "Skipping Swagger to HTML process"
   fi
 else
-  echo "ERROR: $commandNameBootprint could not be found"
+  echo "ERROR: command bootprint could not be found"
+  echo "Skipping Swagger to HTML process"
 fi
 
 
