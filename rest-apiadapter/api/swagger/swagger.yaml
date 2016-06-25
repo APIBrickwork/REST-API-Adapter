@@ -12,6 +12,16 @@ consumes:
 produces:
  - application/json
 paths:
+ /help:
+  x-swagger-router-controller: helppage
+  get:
+   description: Returns a HTML representation of the Swagger specification.
+   operationId: getPage
+   produces:
+     - text/html
+   responses:
+    200:
+     description: Success
  /getServiceRequest:
   x-swagger-router-controller: getSerReq
   get:

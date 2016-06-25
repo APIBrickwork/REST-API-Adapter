@@ -68,6 +68,18 @@ function appendPaths(protoObj){
 }
 
 function appendStaticPaths(){
+  // Get helppage (returns html representation of swagger specification)
+  fs.appendFileSync(output, " /help:\n");
+  fs.appendFileSync(output, "  x-swagger-router-controller: helppage\n");
+  fs.appendFileSync(output, "  get:\n");
+  fs.appendFileSync(output, "   description: Returns a HTML representation of the Swagger specification.\n");
+  fs.appendFileSync(output, "   operationId: getPage\n");
+  fs.appendFileSync(output, "   produces:\n");
+  fs.appendFileSync(output, "    - text/html\n");
+  fs.appendFileSync(output, "   responses:\n");
+  fs.appendFileSync(output, "    200:\n");
+  fs.appendFileSync(output, "     description: Success\n");
+
   // Get service requests path
   fs.appendFileSync(output, " /getServiceRequest:\n");
   fs.appendFileSync(output, "  x-swagger-router-controller: getSerReq\n");
