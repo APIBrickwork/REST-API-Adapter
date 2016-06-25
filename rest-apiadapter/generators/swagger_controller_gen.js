@@ -79,8 +79,7 @@ function appendGrpcVariables(grpcService){
   var grpcCredentialsString = "grpc.credentials.createInsecure()"
   fs.appendFileSync(output, "var " + grpcService.name + "stub = new protoDescriptor." +
   grpcService.name + "(grpcHost + \":\" + grpcPort," + grpcCredentialsString + ");\n");
-  //var ec2opsstub = new protoDescriptor.Ec2Ops(grpcHost+":"+grpcPort,
-  //grpc.credentials.createInsecure())
+
   fs.appendFileSync(output, "\n\n");
 }
 
@@ -114,7 +113,6 @@ function appendRpcFunctionImpl(grpcService){
 
     fs.appendFileSync(output, "}\n\n");
 
-    // TODO: Evalutate
     if(usesRequestStream){
       appendOpenStreamFunction(grpcService.name, rpcName, usesResponseStream);
       appendCloseStreamFunction(rpcName);
@@ -170,10 +168,7 @@ function appendRpcFunctionImplNoStream(grpcServiceName, rpcName, rpcProps){
 
 // TODO: Add logging for the below stuff
 function appendRpcFunctionImplRequestStream(rpcProps){
-  // TODO: Evaluate
-  // TODO: Necessary to catch if call is not available???
-  // TODO: All the streaming function should just return success or error
-  // message
+
   fs.appendFileSync(output, "\tvar streamId = req.swagger.params.id.value;\n");
   var requestBodyString = "req.swagger.params." + rpcProps.request + ".value";
   fs.appendFileSync(output, "\tvar call = streamMap.get(streamId);\n");
@@ -202,11 +197,9 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
   fs.appendFileSync(output, "\tcall.on(\"data\", function(data){\n");
 
   fs.appendFileSync(output, "\t\tdb.set(currentId + \".status\", \"pending\").value();\n");
-  // TODO: Think about how to append multiple outputs!!
   fs.appendFileSync(output, "\t\tvar dataObj = {};\n");
   fs.appendFileSync(output, "\t\tdataObj[\"data\" + dataCounter] = data;\n");
 
-  //fs.appendFileSync(output, "\t\tdb.set(currentId + \".output\", dataObj).value();\n");
   fs.appendFileSync(output, "\t\tdb.get(currentId + \".output\").push(dataObj).value();\n");
 
   fs.appendFileSync(output, "\t\tdataCounter++;\n");
@@ -229,9 +222,7 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
 
 function appendRpcFunctionImplBidirectionalStream(rpcProps){
   // TODO: Evaluate
-  // TODO: Necessary to catch if call is not available???
-  // TODO: All the streaming function should just return success or error
-  // message
+
   fs.appendFileSync(output, "\tvar streamId = req.swagger.params.id.value;\n");
 
   var requestBodyString = "req.swagger.params." + rpcProps.request + ".value";
@@ -244,7 +235,7 @@ function appendRpcFunctionImplBidirectionalStream(rpcProps){
 }
 
 function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
-  // TODO: Evaluate
+
   fs.appendFileSync(output, "exports." + rpcName + "OpenStream = function(req, res){\n");
 
   fs.appendFileSync(output, "\t// v4 --> random based uuid\n");
@@ -253,17 +244,29 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
 
   fs.appendFileSync(output, "\tconsole.log(\"Created new Ids serviceRequestId = \" + currentId + \" | streamId = \" + streamId)\n\n");
 
-  // In this case it's a bidirectional stream
   var lowerCaseRpcName = rpcName.charAt(0).toLowerCase() + rpcName.slice(1);
 
+  // In this case it's a bidirectional stream
   if(usesResponseStream){
     fs.appendFileSync(output, "\tvar call = "+ grpcServiceName + "stub." +
       lowerCaseRpcName + "();\n\n");
+    fs.appendFileSync(output, "\tvar dataCounter = 0;\n\n");
+
     fs.appendFileSync(output, "\tcall.on(\"data\", function(data){\n");
 
     fs.appendFileSync(output, "\t\tdb.set(currentId + \".status\", \"pending\").value();\n");
     // TODO: Think about how to append multiple outputs!!
-    fs.appendFileSync(output, "\t\tdb.set(currentId + \".output\", data).value();\n");
+
+    fs.appendFileSync(output, "\t\tvar dataObj = {};\n");
+    fs.appendFileSync(output, "\t\tdataObj[\"data\" + dataCounter] = data;\n");
+
+    fs.appendFileSync(output, "\t\tdb.get(currentId + \".output\").push(dataObj).value();\n");
+
+    fs.appendFileSync(output, "\t\tdataCounter++;\n");
+    
+
+
+    //fs.appendFileSync(output, "\t\tdb.set(currentId + \".output\", data).value();\n");
     // end of call.on data
     fs.appendFileSync(output, "\t});\n");
     fs.appendFileSync(output, "\tcall.on(\"status\", function(status){\n");
@@ -291,7 +294,7 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
   }
 
   fs.appendFileSync(output, "\tvar jsonRequest = {status:\"pending\", service:\"" +
-    rpcName + "\", output:\"\"};\n");
+    rpcName + "\", output:[]};\n");
   fs.appendFileSync(output, "\tdb.set(currentId, jsonRequest).value();\n\n");
 
   // Add stream to map
