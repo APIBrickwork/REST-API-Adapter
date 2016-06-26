@@ -111,12 +111,15 @@ function appendDynamicPaths(protoObj){
     for(var rpcName in protoObj.services[i].rpc){
       var isRequestStream = protoObj.services[i].rpc[rpcName].request_stream;
 
+      var serviceNameLowerCase = protoObj.services[i].name.toLowerCase();
+      var rpcNameLowerCase = rpcName.toLowerCase();
+
       if(isRequestStream){
-        fs.appendFileSync(output, " /" + protoObj.services[i].name +
-        "/" + rpcName + "/{id}:\n");
+        fs.appendFileSync(output, " /" + serviceNameLowerCase +
+        "/" + rpcNameLowerCase + "/{id}:\n");
       }else{
-        fs.appendFileSync(output, " /" + protoObj.services[i].name +
-        "/" + rpcName + ":\n");
+        fs.appendFileSync(output, " /" + serviceNameLowerCase +
+        "/" + rpcNameLowerCase + ":\n");
       }
 
       fs.appendFileSync(output, "  x-swagger-router-controller: " +
@@ -165,8 +168,11 @@ function appendDynamicPaths(protoObj){
 }
 
 function appendOpenStreamPath(grpcServiceName, rpcName){
-  fs.appendFileSync(output, " /" + grpcServiceName +
-  "/" + rpcName + "/" + "OpenStream" +":\n");
+  var serviceNameLowerCase = grpcServiceName.toLowerCase();
+  var rpcNameLowerCase = rpcName.toLowerCase();
+
+  fs.appendFileSync(output, " /" + serviceNameLowerCase +
+  "/" + rpcNameLowerCase + "/" + "OpenStream" +":\n");
 
   fs.appendFileSync(output, "  x-swagger-router-controller: " +
   "gen_" + grpcServiceName + "\n");
@@ -188,8 +194,11 @@ function appendOpenStreamPath(grpcServiceName, rpcName){
 }
 
 function appendCloseStreamPath(grpcServiceName, rpcName){
-  fs.appendFileSync(output, " /" + grpcServiceName +
-  "/" + rpcName + "/" + "CloseStream" +"/{id}:\n");
+  var serviceNameLowerCase = grpcServiceName.toLowerCase();
+  var rpcNameLowerCase = rpcName.toLowerCase();
+
+  fs.appendFileSync(output, " /" + serviceNameLowerCase +
+  "/" + rpcNameLowerCase + "/" + "CloseStream" +"/{id}:\n");
 
   fs.appendFileSync(output, "  x-swagger-router-controller: " +
   "gen_" + grpcServiceName + "\n");
