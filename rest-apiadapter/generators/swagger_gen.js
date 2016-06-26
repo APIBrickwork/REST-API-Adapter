@@ -81,12 +81,13 @@ function appendStaticPaths(){
   fs.appendFileSync(output, "     description: Success\n");
 
   // Get service requests path
-  fs.appendFileSync(output, " /getServiceRequest:\n");
+  fs.appendFileSync(output, " /service-request/{id}:\n");
   fs.appendFileSync(output, "  x-swagger-router-controller: getSerReq\n");
   fs.appendFileSync(output, "  get:\n");
   fs.appendFileSync(output, "    parameters:\n");
   fs.appendFileSync(output, "     - name: id\n");
-  fs.appendFileSync(output, "       in: query\n");
+  fs.appendFileSync(output, "       in: path\n");
+  fs.appendFileSync(output, "       required: true\n");
   fs.appendFileSync(output, "       description: The ServiceRequestId to query for.\n");
   fs.appendFileSync(output, "       type: string\n");
   fs.appendFileSync(output, "    description: Gets information for the specified ServiceRequestId.\n");
@@ -108,20 +109,27 @@ function appendDynamicPaths(protoObj){
 
   for(var i=0;i<protoObj.services.length;i++){
     for(var rpcName in protoObj.services[i].rpc){
-      fs.appendFileSync(output, " /" + protoObj.services[i].name +
-      "/" + rpcName + ":\n");
+      var isRequestStream = protoObj.services[i].rpc[rpcName].request_stream;
+
+      if(isRequestStream){
+        fs.appendFileSync(output, " /" + protoObj.services[i].name +
+        "/" + rpcName + "/{id}:\n");
+      }else{
+        fs.appendFileSync(output, " /" + protoObj.services[i].name +
+        "/" + rpcName + ":\n");
+      }
 
       fs.appendFileSync(output, "  x-swagger-router-controller: " +
       "gen_" + protoObj.services[i].name + "\n");
 
       // Check if there is a request stream that has to be opened
-      var isRequestStream = protoObj.services[i].rpc[rpcName].request_stream;
 
       fs.appendFileSync(output, "  post:\n");
       fs.appendFileSync(output, "   parameters:\n");
       if(isRequestStream){
         fs.appendFileSync(output, "    - name: id\n");
-        fs.appendFileSync(output, "      in: query\n");
+        fs.appendFileSync(output, "      in: path\n");
+        fs.appendFileSync(output, "      required: true\n");
         fs.appendFileSync(output, "      description: The ServiceRequestId to query for.\n");
         fs.appendFileSync(output, "      type: string\n");
       }
@@ -181,14 +189,15 @@ function appendOpenStreamPath(grpcServiceName, rpcName){
 
 function appendCloseStreamPath(grpcServiceName, rpcName){
   fs.appendFileSync(output, " /" + grpcServiceName +
-  "/" + rpcName + "/" + "CloseStream" +":\n");
+  "/" + rpcName + "/" + "CloseStream" +"/{id}:\n");
 
   fs.appendFileSync(output, "  x-swagger-router-controller: " +
   "gen_" + grpcServiceName + "\n");
   fs.appendFileSync(output, "  delete:\n");
   fs.appendFileSync(output, "   parameters:\n");
   fs.appendFileSync(output, "    - name: id\n");
-  fs.appendFileSync(output, "      in: query\n");
+  fs.appendFileSync(output, "      in: path\n");
+  fs.appendFileSync(output, "      required: true\n");
   fs.appendFileSync(output, "      description: The StreamId to delete.\n");
   fs.appendFileSync(output, "      type: string\n");
   fs.appendFileSync(output, "   description: Deletes/closes a given Stream for gRPC-Service "

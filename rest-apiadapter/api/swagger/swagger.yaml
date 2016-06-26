@@ -18,16 +18,17 @@ paths:
    description: Returns a HTML representation of the Swagger specification.
    operationId: getPage
    produces:
-     - text/html
+    - text/html
    responses:
     200:
      description: Success
- /getServiceRequest:
+ /service-request/{id}:
   x-swagger-router-controller: getSerReq
   get:
     parameters:
      - name: id
-       in: query
+       in: path
+       required: true
        description: The ServiceRequestId to query for.
        type: string
     description: Gets information for the specified ServiceRequestId.
@@ -68,12 +69,13 @@ paths:
      description: Error
      schema:
       $ref: "#/definitions/ErrorResponse"
- /TesterService/RequestStream:
+ /TesterService/RequestStream/{id}:
   x-swagger-router-controller: gen_TesterService
   post:
    parameters:
     - name: id
-      in: query
+      in: path
+      required: true
       description: The ServiceRequestId to query for.
       type: string
     - name: AddUserRequest
@@ -113,12 +115,13 @@ paths:
      description: Error
      schema:
       $ref: "#/definitions/ErrorResponse"
- /TesterService/RequestStream/CloseStream:
+ /TesterService/RequestStream/CloseStream/{id}:
   x-swagger-router-controller: gen_TesterService
   delete:
    parameters:
     - name: id
-      in: query
+      in: path
+      required: true
       description: The StreamId to delete.
       type: string
    description: Deletes/closes a given Stream for gRPC-Service RequestStream
@@ -129,7 +132,7 @@ paths:
     200:
      description: Success
      schema:
-      title: RequestStreamCloseStreamResponse
+      title: RequestStreamCloseStreamResponse 
       type: string
     default:
      description: Error
@@ -159,12 +162,13 @@ paths:
      description: Error
      schema:
       $ref: "#/definitions/ErrorResponse"
- /TesterService/BidirectionalStream:
+ /TesterService/BidirectionalStream/{id}:
   x-swagger-router-controller: gen_TesterService
   post:
    parameters:
     - name: id
-      in: query
+      in: path
+      required: true
       description: The ServiceRequestId to query for.
       type: string
     - name: GreetingRequest
@@ -204,12 +208,13 @@ paths:
      description: Error
      schema:
       $ref: "#/definitions/ErrorResponse"
- /TesterService/BidirectionalStream/CloseStream:
+ /TesterService/BidirectionalStream/CloseStream/{id}:
   x-swagger-router-controller: gen_TesterService
   delete:
    parameters:
     - name: id
-      in: query
+      in: path
+      required: true
       description: The StreamId to delete.
       type: string
    description: Deletes/closes a given Stream for gRPC-Service BidirectionalStream
@@ -220,7 +225,7 @@ paths:
     200:
      description: Success
      schema:
-      title: BidirectionalStreamCloseStreamResponse
+      title: BidirectionalStreamCloseStreamResponse 
       type: string
     default:
      description: Error
@@ -253,7 +258,7 @@ definitions:
    service:
     type: string
    output:
-    type: [string, object]
+    type: [string, object, array]
  innerinnerMsg:
   properties:
    testinfo:
