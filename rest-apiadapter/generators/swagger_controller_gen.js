@@ -149,7 +149,7 @@ function appendRpcFunctionImplNoStream(grpcServiceName, rpcName, rpcProps){
   fs.appendFileSync(output, "\t\t// function 2: return serviceRequestId for lookup\n");
   fs.appendFileSync(output, "\t\tfunction(callback){\n");
 
-  fs.appendFileSync(output, "\t\t\tvar jsonRequest = {status:\"pending\", service:\"" + rpcName + "\", output:\"\"};\n");
+  fs.appendFileSync(output, "\t\t\tvar jsonRequest = {status:\"pending\", service:\"" + rpcName.toLowerCase() + "\", output:\"\"};\n");
   fs.appendFileSync(output, "\t\t\tdb.set(currentId, jsonRequest).value();\n");
   fs.appendFileSync(output, "\t\t\tcallback();\n");
   // end of function2
@@ -191,7 +191,7 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
     lowerCaseRpcName + "("+ requestBodyString + ");\n");
   fs.appendFileSync(output, "\tvar dataCounter = 0;\n\n");
   fs.appendFileSync(output, "\tvar jsonRequest = {status:\"pending\", service:\"" +
-    rpcName + "\", output:[]};\n");
+    rpcName.toLowerCase() + "\", output:[]};\n");
   fs.appendFileSync(output, "\tdb.set(currentId, jsonRequest).value();\n\n");
 
   fs.appendFileSync(output, "\tcall.on(\"data\", function(data){\n");
@@ -263,7 +263,7 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
     fs.appendFileSync(output, "\t\tdb.get(currentId + \".output\").push(dataObj).value();\n");
 
     fs.appendFileSync(output, "\t\tdataCounter++;\n");
-    
+
 
 
     //fs.appendFileSync(output, "\t\tdb.set(currentId + \".output\", data).value();\n");
@@ -294,7 +294,7 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
   }
 
   fs.appendFileSync(output, "\tvar jsonRequest = {status:\"pending\", service:\"" +
-    rpcName + "\", output:[]};\n");
+    rpcName.toLowerCase() + "\", output:[]};\n");
   fs.appendFileSync(output, "\tdb.set(currentId, jsonRequest).value();\n\n");
 
   // Add stream to map
