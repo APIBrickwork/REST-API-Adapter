@@ -160,48 +160,23 @@ function appendDynamicPaths(protoObj){
       fs.appendFileSync(output, "      $ref: \"#/definitions/ErrorResponse\"\n");
 
       if(isRequestStream){
-        appendOpenStreamPath(protoObj.services[i].name, rpcName);
         appendCloseStreamPath(protoObj.services[i].name, rpcName);
+        appendOpenStreamPath(protoObj.services[i].name, rpcName);
       }
     }
   }
 }
 
-function appendOpenStreamPath(grpcServiceName, rpcName){
-  var serviceNameLowerCase = grpcServiceName.toLowerCase();
-  var rpcNameLowerCase = rpcName.toLowerCase();
-
-  fs.appendFileSync(output, " /" + serviceNameLowerCase +
-  "/" + rpcNameLowerCase + "/" + "OpenStream" +":\n");
-
-  fs.appendFileSync(output, "  x-swagger-router-controller: " +
-  "gen_" + grpcServiceName + "\n");
-  fs.appendFileSync(output, "  post:\n");
-  fs.appendFileSync(output, "   description: Opens a Stream for gRPC-Service "+ rpcName +"\n");
-
-  fs.appendFileSync(output, "   operationId: "+ rpcName + "OpenStream" + "\n");
-  fs.appendFileSync(output, "   produces:\n");
-  fs.appendFileSync(output, "    - application/json\n");
-  fs.appendFileSync(output, "   responses:\n");
-  fs.appendFileSync(output, "    200:\n");
-  fs.appendFileSync(output, "     description: Success\n");
-  fs.appendFileSync(output, "     schema:\n");
-  fs.appendFileSync(output, "      $ref: \"#/definitions/ServiceRequestResponse\"\n\n");
-  fs.appendFileSync(output, "    default:\n");
-  fs.appendFileSync(output, "     description: Error\n");
-  fs.appendFileSync(output, "     schema:\n");
-  fs.appendFileSync(output, "      $ref: \"#/definitions/ErrorResponse\"\n");
-}
-
 function appendCloseStreamPath(grpcServiceName, rpcName){
-  var serviceNameLowerCase = grpcServiceName.toLowerCase();
-  var rpcNameLowerCase = rpcName.toLowerCase();
+  //var serviceNameLowerCase = grpcServiceName.toLowerCase();
+  //var rpcNameLowerCase = rpcName.toLowerCase();
 
-  fs.appendFileSync(output, " /" + serviceNameLowerCase +
-  "/" + rpcNameLowerCase + "/" + "CloseStream" +"/{id}:\n");
+  // TODO: Evaluate
+  //fs.appendFileSync(output, " /" + serviceNameLowerCase +
+  //"/" + rpcNameLowerCase + "/" + "CloseStream" +"/{id}:\n");
 
-  fs.appendFileSync(output, "  x-swagger-router-controller: " +
-  "gen_" + grpcServiceName + "\n");
+  //fs.appendFileSync(output, "  x-swagger-router-controller: " +
+  //"gen_" + grpcServiceName + "\n");
   fs.appendFileSync(output, "  delete:\n");
   fs.appendFileSync(output, "   parameters:\n");
   fs.appendFileSync(output, "    - name: id\n");
@@ -221,6 +196,32 @@ function appendCloseStreamPath(grpcServiceName, rpcName){
   fs.appendFileSync(output, "     schema:\n");
   fs.appendFileSync(output, "      title: "+ rpcName + "CloseStreamResponse" +" \n");
   fs.appendFileSync(output, "      type: string\n");
+  fs.appendFileSync(output, "    default:\n");
+  fs.appendFileSync(output, "     description: Error\n");
+  fs.appendFileSync(output, "     schema:\n");
+  fs.appendFileSync(output, "      $ref: \"#/definitions/ErrorResponse\"\n");
+}
+
+function appendOpenStreamPath(grpcServiceName, rpcName){
+  var serviceNameLowerCase = grpcServiceName.toLowerCase();
+  var rpcNameLowerCase = rpcName.toLowerCase();
+
+  fs.appendFileSync(output, " /" + serviceNameLowerCase +
+  "/" + rpcNameLowerCase + "/:\n");
+
+  fs.appendFileSync(output, "  x-swagger-router-controller: " +
+  "gen_" + grpcServiceName + "\n");
+  fs.appendFileSync(output, "  get:\n");
+  fs.appendFileSync(output, "   description: Opens a Stream for gRPC-Service "+ rpcName +"\n");
+
+  fs.appendFileSync(output, "   operationId: "+ rpcName + "OpenStream" + "\n");
+  fs.appendFileSync(output, "   produces:\n");
+  fs.appendFileSync(output, "    - application/json\n");
+  fs.appendFileSync(output, "   responses:\n");
+  fs.appendFileSync(output, "    200:\n");
+  fs.appendFileSync(output, "     description: Success\n");
+  fs.appendFileSync(output, "     schema:\n");
+  fs.appendFileSync(output, "      $ref: \"#/definitions/ServiceRequestResponse\"\n\n");
   fs.appendFileSync(output, "    default:\n");
   fs.appendFileSync(output, "     description: Error\n");
   fs.appendFileSync(output, "     schema:\n");
