@@ -85,7 +85,6 @@ function appendGrpcVariables(grpcService){
 
 function appendLocalVariables(){
   fs.appendFileSync(output, "var streamMap = new Map();\n");
-  fs.appendFileSync(output, "var streamIdToServiceRequestMap = new Map();\n");
   fs.appendFileSync(output, "\n\n");
 }
 
@@ -162,27 +161,25 @@ function appendRpcFunctionImplNoStream(grpcServiceName, rpcName, rpcProps){
   fs.appendFileSync(output, "\t\t}\n");
   // end of async.parallel
   fs.appendFileSync(output, "\t );\n\n");
-  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId, streamId: \"\"}\n");
+  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId}\n");
 	fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 }
 
-// TODO: Add logging for the below stuff
 function appendRpcFunctionImplRequestStream(rpcProps){
 
-  fs.appendFileSync(output, "\tvar streamId = req.swagger.params.id.value;\n");
+  fs.appendFileSync(output, "\tvar reqId = req.swagger.params.id.value;\n");
   var requestBodyString = "req.swagger.params." + rpcProps.request + ".value";
-  fs.appendFileSync(output, "\tvar call = streamMap.get(streamId);\n");
-  fs.appendFileSync(output, "\tconsole.log(\"streamId = \" + streamId + \" | body = \" + JSON.stringify(" + requestBodyString + "));\n");
+  fs.appendFileSync(output, "\tvar call = streamMap.get(reqId);\n");
+  fs.appendFileSync(output, "\tconsole.log(\"requestId = \" + reqId + \" | body = \" + JSON.stringify(" + requestBodyString + "));\n");
 
   fs.appendFileSync(output, "\tcall.write("+ requestBodyString + ");\n");
-  fs.appendFileSync(output, "\tvar currentId = streamIdToServiceRequestMap.get(streamId);\n");
-  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId, streamId: streamId}\n");
+  fs.appendFileSync(output, "\tvar jsonRes = {requestId: reqId}\n");
 	fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 
 }
 
 function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps){
-  // TODO: Implement
+
   var lowerCaseRpcName = rpcName.charAt(0).toLowerCase() + rpcName.slice(1);
   var requestBodyString = "req.swagger.params." + rpcProps.request + ".value";
   fs.appendFileSync(output, "\t// v4 --> random based uuid\n");
@@ -216,21 +213,19 @@ function appendRpcFunctionImplResponseStream(grpcServiceName, rpcName, rpcProps)
   fs.appendFileSync(output, "\t\tdataCounter = 0;\n");
   // end of call.on end
   fs.appendFileSync(output, "\t});\n");
-  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId, streamId: \"\"}\n");
+  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId}\n");
 	fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 }
 
 function appendRpcFunctionImplBidirectionalStream(rpcProps){
-  // TODO: Evaluate
 
-  fs.appendFileSync(output, "\tvar streamId = req.swagger.params.id.value;\n");
+  fs.appendFileSync(output, "\tvar reqId = req.swagger.params.id.value;\n");
 
   var requestBodyString = "req.swagger.params." + rpcProps.request + ".value";
-  fs.appendFileSync(output, "\tvar call = streamMap.get(streamId);\n");
+  fs.appendFileSync(output, "\tvar call = streamMap.get(reqId);\n");
 
   fs.appendFileSync(output, "\tcall.write("+ requestBodyString + ");\n");
-  fs.appendFileSync(output, "\tvar currentId = streamIdToServiceRequestMap.get(streamId);\n");
-  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId, streamId: streamId}\n");
+  fs.appendFileSync(output, "\tvar jsonRes = {requestId: reqId}\n");
   fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 }
 
@@ -240,9 +235,8 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
 
   fs.appendFileSync(output, "\t// v4 --> random based uuid\n");
   fs.appendFileSync(output, "\tvar currentId = uuid.v4();\n");
-  fs.appendFileSync(output, "\tvar streamId = uuid.v4();\n\n");
 
-  fs.appendFileSync(output, "\tconsole.log(\"Created new Ids serviceRequestId = \" + currentId + \" | streamId = \" + streamId)\n\n");
+  fs.appendFileSync(output, "\tconsole.log(\"Created new Id serviceRequestId = \" + currentId);\n\n");
 
   var lowerCaseRpcName = rpcName.charAt(0).toLowerCase() + rpcName.slice(1);
 
@@ -255,18 +249,12 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
     fs.appendFileSync(output, "\tcall.on(\"data\", function(data){\n");
 
     fs.appendFileSync(output, "\t\tdb.set(currentId + \".status\", \"pending\").value();\n");
-    // TODO: Think about how to append multiple outputs!!
 
     fs.appendFileSync(output, "\t\tvar dataObj = {};\n");
     fs.appendFileSync(output, "\t\tdataObj[\"data\" + dataCounter] = data;\n");
-
     fs.appendFileSync(output, "\t\tdb.get(currentId + \".output\").push(dataObj).value();\n");
-
     fs.appendFileSync(output, "\t\tdataCounter++;\n");
 
-
-
-    //fs.appendFileSync(output, "\t\tdb.set(currentId + \".output\", data).value();\n");
     // end of call.on data
     fs.appendFileSync(output, "\t});\n");
     fs.appendFileSync(output, "\tcall.on(\"status\", function(status){\n");
@@ -298,24 +286,21 @@ function appendOpenStreamFunction(grpcServiceName, rpcName, usesResponseStream){
   fs.appendFileSync(output, "\tdb.set(currentId, jsonRequest).value();\n\n");
 
   // Add stream to map
-  fs.appendFileSync(output, "\tstreamMap.set(streamId, call);\n");
+  fs.appendFileSync(output, "\tstreamMap.set(currentId, call);\n");
 
-  fs.appendFileSync(output, "\tstreamIdToServiceRequestMap.set(streamId, currentId);\n");
-
-  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId, streamId: streamId}\n");
+  fs.appendFileSync(output, "\tvar jsonRes = {requestId: currentId}\n");
 	fs.appendFileSync(output, "\tres.json(jsonRes);\n");
 
   fs.appendFileSync(output, "}\n\n");
 }
 
 function appendCloseStreamFunction(rpcName){
-  // TODO: Evaluate
+
   fs.appendFileSync(output, "exports." + rpcName + "CloseStream = function(req, res){\n");
-  fs.appendFileSync(output, "\tvar streamId = req.swagger.params.id.value;\n");
-  fs.appendFileSync(output, "\tvar call = streamMap.get(streamId);\n");
+  fs.appendFileSync(output, "\tvar reqId = req.swagger.params.id.value;\n");
+  fs.appendFileSync(output, "\tvar call = streamMap.get(reqId);\n");
   fs.appendFileSync(output, "\tcall.end();\n");
-  fs.appendFileSync(output, "\tstreamMap.delete(streamId);\n");
-  fs.appendFileSync(output, "\tstreamIdToServiceRequestMap.delete(streamId);\n");
+  fs.appendFileSync(output, "\tstreamMap.delete(reqId);\n");
   fs.appendFileSync(output, "\tres.end(\"Success\");\n");
   fs.appendFileSync(output, "}\n\n");
 }

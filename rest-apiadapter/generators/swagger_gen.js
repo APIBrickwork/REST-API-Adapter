@@ -25,7 +25,7 @@ if(!(typeof process.env.REST_LISTEN_PORT === 'undefined')){
 /**
 * Protobuf definitions
 */
-var protoFile = process.env.API_PROTO_PATH;
+var protoFile = "./tester.proto";
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 // Check if it was called as required of as main
@@ -168,15 +168,7 @@ function appendDynamicPaths(protoObj){
 }
 
 function appendCloseStreamPath(grpcServiceName, rpcName){
-  //var serviceNameLowerCase = grpcServiceName.toLowerCase();
-  //var rpcNameLowerCase = rpcName.toLowerCase();
 
-  // TODO: Evaluate
-  //fs.appendFileSync(output, " /" + serviceNameLowerCase +
-  //"/" + rpcNameLowerCase + "/" + "CloseStream" +"/{id}:\n");
-
-  //fs.appendFileSync(output, "  x-swagger-router-controller: " +
-  //"gen_" + grpcServiceName + "\n");
   fs.appendFileSync(output, "  delete:\n");
   fs.appendFileSync(output, "   parameters:\n");
   fs.appendFileSync(output, "    - name: id\n");
@@ -241,8 +233,6 @@ function appendStaticDefinitions(){
   fs.appendFileSync(output, "   - requestId\n");
   fs.appendFileSync(output, "  properties:\n");
   fs.appendFileSync(output, "   requestId:\n");
-  fs.appendFileSync(output, "    type: string\n");
-  fs.appendFileSync(output, "   streamId:\n");
   fs.appendFileSync(output, "    type: string\n");
   fs.appendFileSync(output, " ServiceRequestInfo:\n");
   fs.appendFileSync(output, "  required:\n");

@@ -242,8 +242,6 @@ definitions:
   properties:
    requestId:
     type: string
-   streamId:
-    type: string
  ServiceRequestInfo:
   required:
    - status
