@@ -25,7 +25,7 @@ if(!(typeof process.env.REST_LISTEN_PORT === 'undefined')){
 /**
 * Protobuf definitions
 */
-var protoFile = "./tester.proto";
+var protoFile = process.env.API_PROTO_PATH;
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 // Check if it was called as required of as main
