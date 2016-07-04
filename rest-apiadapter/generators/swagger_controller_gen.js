@@ -17,7 +17,12 @@ var output = "";
 /**
  * Protobuf definitions
  */
-var protoFile = process.env.API_PROTO_PATH;
+var protoFile = "/api/main.proto";
+
+if(!(typeof process.env.API_PROTO_PATH === 'undefined')){
+	protoFile = process.env.API_PROTO_PATH;
+}
+
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 /**

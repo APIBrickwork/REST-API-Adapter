@@ -7,14 +7,22 @@
 var fs = require("fs");
 var protobuf = require("protobufjs");
 var util = require("util");
+var metadataReader = require("./metadataReader.js");
+
+/**
+* Metadata
+*/
+var metadataFile = "/api/metadata.json"
+var metadata = {
+	// Default values used if nothing is specified
+	title: "gRPC-API-Adapter (REST)",
+	version: "1.0"
+};
 
 /**
  * Project definitions
  */
-// TODO: Expose those values?
 var output = "./swagger.yaml";
-var version = "1.0";
-var title = "gRPC-API-Adapter (REST)";
 var host = "localhost";
 var port = 10010;
 
@@ -25,7 +33,11 @@ if (!(typeof process.env.REST_LISTEN_PORT === 'undefined')) {
 /**
  * Protobuf definitions
  */
-var protoFile = process.env.API_PROTO_PATH;
+var protoFile = "/api/main.proto";
+
+if(!(typeof process.env.API_PROTO_PATH === 'undefined')){
+	protoFile = process.env.API_PROTO_PATH;
+}
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
 
 if (require.main === module) {
@@ -35,6 +47,15 @@ if (require.main === module) {
 }
 
 function main() {
+
+	var metadataResult = metadataReader.readMetadata(metadataFile);
+
+	// If not undefined use the specified values instead of the default ones
+	if(!(metadataResult === "undefined")){
+		console.log("swagger_gen.js: Using custom metadata.")
+		metadata = metadataResult;
+	}
+
 	fs.writeFileSync(output, "swagger: \"2.0\"\n");
 	var protoObj = protoParser.parse();
 	appendDescription();
@@ -48,8 +69,8 @@ function main() {
  */
 function appendDescription() {
 	fs.appendFileSync(output, "info:\n");
-	fs.appendFileSync(output, " version: \"" + version + "\"\n");
-	fs.appendFileSync(output, " title: " + title + "\n");
+	fs.appendFileSync(output, " version: \"" + metadata.version + "\"\n");
+	fs.appendFileSync(output, " title: " + metadata.title + "\n");
 	fs.appendFileSync(output, "host: " + host + ":" + port + "\n");
 	fs.appendFileSync(output, "basePath: /\n");
 	fs.appendFileSync(output, "schemes:\n \- http\n \- https\n");
