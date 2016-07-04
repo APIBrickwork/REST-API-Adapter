@@ -31,6 +31,7 @@ A request stream will result in 3 methods (instead of just one POST method):
 * POST `/<grpcName>/<rpcName>/{id}`: Streams the object given in body to the stream of the given requestId `{id}` in path
 * DELETE `/<grpcName>/<rpcName>/{id}`: Closes the stream and therefore indicates the end of streaming
 
+`swagger_controller_gen.js` will generate the according functions to implement this. Those functions will automatically be referenced by the generated `swagger.yaml` file.
 
 ## (optional) metadata.json
 This file is optional and can be used to customize the generated `swagger.yaml` file. 
