@@ -19,7 +19,7 @@ It uses a given proto3 file to generate an according swagger.yaml file and the c
 
 ### [swagger_controller_gen.js](https://github.com/tfreundo/gRPC-APIAdapter/blob/master/rest-apiadapter/generators/swagger_controller_gen.js)
 * Reads the proto3 file
-* Each gRPC Service defined in the proto3 file will result in a generated controller [here](https://github.com/tfreundo/gRPC-APIAdapter/tree/dev-swagger/rest-apiadapter/api/controllers) with the naming pattern `gen_<grpcName>.js` where `<grpcName>` is the name of the gRPC Service defined
+* Each gRPC Service defined in the proto3 file will result in a generated controller [here](https://github.com/tfreundo/gRPC-APIAdapter/tree/master/rest-apiadapter/api/controllers) with the naming pattern `gen_<grpcName>.js` where `<grpcName>` is the name of the gRPC Service defined
 * Each RPC of each gRPC Service will result in a generated function within the according `gen_<grpcName>.js` file. Those functions are automatically referenced by the `swagger_gen.js`
 * See [Services using request streams](#services-using-request-streams) for the special case when using request streams in gRPC Services
 
