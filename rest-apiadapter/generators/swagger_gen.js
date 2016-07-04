@@ -67,7 +67,7 @@ function main() {
 	appendPaths(protoObj);
 	appendStaticDefinitions();
 	appendDynamicDefinitions(protoObj.messages);
-	appendEnumDefinitions(protoObj);
+	appendEnumDefinitions(protoObj.enums);
 }
 /**
  * Appends the static descriptions to the output swagger file.
@@ -337,20 +337,18 @@ function appendDynamicDefinitions(messages) {
  * @param {enums} Array containing all enums of the given parsed
  * proto object for which a definition should be added.
  */
-function appendEnumDefinitions(protoObj) {
-	// TODO: Change to enum as input parameter!! And evaluate that it is still working
-	// TODO: After doing that the description is correct
-	for (var i = 0; i < protoObj.enums.length; i++) {
+function appendEnumDefinitions(enums) {
+	for (var i = 0; i < enums.length; i++) {
 
-		var enumName = protoObj.enums[i].name;
+		var enumName = enums[i].name;
 		fs.appendFileSync(output, " " + enumName + ":\n");
 		fs.appendFileSync(output, "  type: string\n");
 		fs.appendFileSync(output, "  enum: [");
-		for (var j = 0; j < protoObj.enums[i].values.length; j++) {
-			var valueName = protoObj.enums[i].values[j].name;
+		for (var j = 0; j < enums[i].values.length; j++) {
+			var valueName = enums[i].values[j].name;
 			fs.appendFileSync(output, "\"" + valueName + "\"");
 
-			if (j < protoObj.enums[i].values.length - 1) {
+			if (j < enums[i].values.length - 1) {
 				fs.appendFileSync(output, ",");
 			}
 		}
