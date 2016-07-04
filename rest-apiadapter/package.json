@@ -1,6 +1,6 @@
 {
   "name": "gRPC-APIAdapter",
-  "version": "1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Swagger REST-API-Adapter.",
   "keywords": ["Swagger", "REST to gRPC", "REST", "gRPC"],
