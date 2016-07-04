@@ -13,6 +13,11 @@ var metadataReader = require("./metadataReader.js");
 * Metadata
 */
 var metadataFile = "/api/metadata.json"
+
+if(!(typeof process.env.METADATA_PATH === 'undefined')){
+	metadataFile = process.env.METADATA_PATH;
+}
+
 var metadata = {
 	// Default values used if nothing is specified
 	title: "gRPC-API-Adapter (REST)",
@@ -306,7 +311,7 @@ function appendDynamicDefinitions(messages) {
 
 		fs.appendFileSync(output, " " + messageName + ":\n");
 		fs.appendFileSync(output, "  properties:\n");
-		// TODO: Currently missing: options, oneofs (Because useless for REST here??)
+
 		for (var j = 0; j < messages[i].fields.length; j++) {
 			var rule = messages[i].fields[j].rule;
 			var type = messages[i].fields[j].type;
