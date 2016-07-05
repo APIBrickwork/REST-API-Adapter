@@ -49,8 +49,8 @@ Example:
 Extensions for `metadata.json`:
 * Metadata could be extended to allow the user to specify services and their according method (GET,POST,...) to use, instead of defaulting to POST
 * Problem:
- * It then doesn't end with just editing the Method.
- * It will be neccessary to enlarge the degrees of freedom the user has to specify definitions (like parameters in query, path, body,...).
+ * It then doesn't end with just editing the Method
+ * It will be neccessary to enlarge the degrees of freedom the user has. This would include specifying definitions (like parameters in query, path, body,...), as well as descriptions,...
  * At some point you would end up by allowing the user to pretty much describe the things he would normally write directly to the swagger.yaml file in the metadata file
 * Considering this the decision in this project was to __not__ offer the user this functionality
 * Rather should the user modify the generated swagger.yaml file directly if necessary
