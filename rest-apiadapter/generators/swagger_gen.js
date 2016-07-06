@@ -12,6 +12,9 @@ var metadataReader = require("./metadataReader.js");
 // Array holding all nested enums (ones defined within messages)
 var nestedEnums = [];
 
+// Array holding all proto objects (main and all recursively added imports)
+var protoObjects = [];
+
 /**
  * Metadata
  */
@@ -66,13 +69,64 @@ function main() {
 
 	fs.writeFileSync(output, "swagger: \"2.0\"\n");
 	var protoObj = protoParser.parse();
+
+	protoObjects.push(protoObj);
+
+	handleImportedProtoFiles(protoObj);
+
 	appendDescription();
-	appendPaths(protoObj);
+	appendPaths(protoObjects);
 	appendStaticDefinitions();
-	appendDynamicDefinitions(protoObj.messages);
-	appendEnumDefinitions(protoObj.enums);
-	appendEnumDefinitions(nestedEnums);
+
+	for (var i = 0; i < protoObjects.length; i++) {
+
+		var packagename = protoObjects[i].package;
+
+		if (packagename === null || packagename === "undefined") {
+			packagename = "";
+		} else {
+			packagename += ".";
+		}
+
+		appendDynamicDefinitions(protoObjects[i].messages, packagename);
+		appendEnumDefinitions(protoObjects[i].enums, packagename);
+
+		// append nested enums
+		for (var j = 0; j < protoObjects[i].messages.length; j++) {
+			for (var k = 0; k < protoObjects[i].messages[j].enums.length; k++) {
+				var arr = [];
+				arr.push(protoObjects[i].messages[j].enums[k]);
+				appendEnumDefinitions(arr, packagename);
+			}
+
+		}
+	}
 }
+
+/**
+ * Will handle imports recursively to find all necessary proto files.
+ * @param {mainProtoObj} The main proto object that should be used as starting point.
+ */
+function handleImportedProtoFiles(mainProtoObj) {
+	console.log("Resolving imports...");
+	console.log("Import Qty = " + mainProtoObj.imports.length);
+
+	for (var i = 0; i < mainProtoObj.imports.length; i++) {
+		var parser = new protobuf.DotProto.Parser(fs.readFileSync("./" + mainProtoObj.imports[i]));
+		var obj = parser.parse();
+
+		// Check for nested imports
+		if (obj.imports.length > 0) {
+			console.log("Found nested imports. Doing recursion...");
+			handleImportedProtoFiles(obj);
+		}
+
+		protoObjects.push(obj);
+
+	}
+
+}
+
 /**
  * Appends the static descriptions to the output swagger file.
  */
@@ -90,12 +144,13 @@ function appendDescription() {
 /**
  * Wraps the appending of static and dynamic paths for the given parsed
  * proto object.
- * @param {protoObj} The proto object that resulted from parsing the file.
  */
-function appendPaths(protoObj) {
+function appendPaths() {
 	fs.appendFileSync(output, "paths:\n");
 	appendStaticPaths();
-	appendDynamicPaths(protoObj);
+	for (var i = 0; i < protoObjects.length; i++) {
+		appendDynamicPaths(protoObjects[i]);
+	}
 	fs.appendFileSync(output, " /swagger:\n");
 	fs.appendFileSync(output, "  x-swagger-pipe: swagger_raw\n");
 }
@@ -176,8 +231,21 @@ function appendDynamicPaths(protoObj) {
 				fs.appendFileSync(output, "      description: The ServiceRequestId to query for.\n");
 				fs.appendFileSync(output, "      type: string\n");
 			}
+
 			var requestType = protoObj.services[i].rpc[rpcName].request;
-			var swaggerRef = getSwaggerRefDefinition(requestType);
+
+			var packagename;
+			// if message name already specifies the package to use
+			if (requestType.includes(".")) {
+				// empty because it's part of the messagename itself here
+				packagename = "";
+				// Remove trailing dot if specified (is only proto parser specific)
+				requestType = removeTrailingDot(requestType);
+			} else {
+				packagename = determinePackageNameForMessage(requestType);
+			}
+
+			var swaggerRef = getSwaggerRefDefinition(requestType, packagename);
 			fs.appendFileSync(output, "    - name: " + requestType + "\n");
 			fs.appendFileSync(output, "      in: body\n");
 			fs.appendFileSync(output, "      required: true\n");
@@ -304,28 +372,23 @@ function appendStaticDefinitions() {
  * Appends dynamic definitions for the given Array of proto messages.
  * @param {messages} Array containing all messages of the given parsed
  * proto object for which a definition should be added.
+ * @param {packagename} The packagename that should be used.
  */
-function appendDynamicDefinitions(messages) {
+function appendDynamicDefinitions(messages, packagename) {
 	for (var i = 0; i < messages.length; i++) {
-		var messageName = messages[i].name;
+
+		var messageName = packagename + messages[i].name;
 
 		if (messages[i].messages.length > 0) {
-			appendDynamicDefinitions(messages[i].messages);
-		}
-
-		// Add enums to nestedEnums if available
-		for(var j=0;j<messages[i].enums.length;j++){
-			console.log("Found nested enum.");
-			console.log(messages[i].enums[j]);
-			nestedEnums.push(messages[i].enums[j]);
+			appendDynamicDefinitions(messages[i].messages, packagename);
 		}
 
 		fs.appendFileSync(output, " " + messageName + ":\n");
 
 		// Defining empty messages (no properties)
-		if(messages[i].fields.length === 0){
+		if (messages[i].fields.length === 0) {
 			fs.appendFileSync(output, "   type: object\n");
-		}else{
+		} else {
 			fs.appendFileSync(output, "  properties:\n");
 		}
 
@@ -338,12 +401,12 @@ function appendDynamicDefinitions(messages) {
 			fs.appendFileSync(output, "   " + fieldName + ":\n");
 			// Special case because maps are currently not supported by swagger
 			if (rule == "map" || rule == "repeated") {
-				appendMapArrayDefinition(type);
+				appendMapArrayDefinition(type, packagename);
 			} else if (isPrimitiveDataType(type)) {
 				fs.appendFileSync(output, "    type: " + convertDataTypeProto3ToSwagger(type) +
 					"\n");
 			} else {
-				fs.appendFileSync(output, "    " + getSwaggerRefDefinition(type) + "\n");
+				fs.appendFileSync(output, "    " + getSwaggerRefDefinition(type, packagename) + "\n");
 			}
 		}
 	}
@@ -353,11 +416,13 @@ function appendDynamicDefinitions(messages) {
  * Appends the enum definitions for the given Array of enums.
  * @param {enums} Array containing all enums of the given parsed
  * proto object for which a definition should be added.
+ * @param {packagename} The packagename that should be used.
  */
-function appendEnumDefinitions(enums) {
+function appendEnumDefinitions(enums, packagename) {
 	for (var i = 0; i < enums.length; i++) {
 
-		var enumName = enums[i].name;
+		var enumName = packagename + enums[i].name;
+
 		fs.appendFileSync(output, " " + enumName + ":\n");
 		fs.appendFileSync(output, "  type: string\n");
 		fs.appendFileSync(output, "  enum: [");
@@ -436,23 +501,71 @@ function isPrimitiveDataType(protoType) {
 /**
  * Creates the reference definiton for a given swagger data type.
  * @param {dataType} The swagger data type which should be referenced.
+ * @param {packagename} The packagename that should be used.
  * @return The reference string for the given swagger data type.
  */
-function getSwaggerRefDefinition(dataType) {
-	return "$ref: \"#/definitions/" + dataType + "\"";
+function getSwaggerRefDefinition(dataType, packagename) {
+	return "$ref: \"#/definitions/" + packagename + dataType + "\"";
 }
 
 /**
  * Appends the map and array definitions (if it was map or repeated in proto3).
  * @param {type} The type of the items within.
+ * @param {packagename} The packagename that should be used.
  */
-function appendMapArrayDefinition(type) {
+function appendMapArrayDefinition(type, packagename) {
 	fs.appendFileSync(output, "    type: array\n");
 	fs.appendFileSync(output, "    items:\n");
 	if (isPrimitiveDataType(type)) {
 		fs.appendFileSync(output, "     type: " +
 			convertDataTypeProto3ToSwagger(type) + "\n");
 	} else {
-		fs.appendFileSync(output, "     " + getSwaggerRefDefinition(type) + "\n");
+		fs.appendFileSync(output, "     " + getSwaggerRefDefinition(type, packagename) + "\n");
 	}
+}
+
+/**
+ * Determines the packagename for a given message name. Will (similar to the behaviour
+ * of protobufjs) start with the inner-most proto file and searches all proto files until
+ * the first occurence of the specified message name.
+ * @param {messageName} The name of the message for which the package name should be determined.
+ * @return {packagename} The according packagename. Empty string if not found.
+ */
+function determinePackageNameForMessage(messageName) {
+
+	var packagename = null;
+	var foundIt = false;
+	// Choose the first message found (local, then imported)
+	for (var i = 0; i < protoObjects.length; i++) {
+		if (!foundIt) {
+			for (var j = 0; j < protoObjects[i].messages.length; j++) {
+
+				if (protoObjects[i].messages[j].name === messageName) {
+					packagename = protoObjects[i].package;
+					foundIt = true;
+					break;
+				}
+			}
+		}
+	}
+
+	if (packagename === null || packagename === "undefined") {
+		packagename = "";
+	} else {
+		packagename += ".";
+	}
+
+	return packagename;
+}
+
+/**
+ * Removed a trailing dot for a given string.
+ * @param {str} The string for which a trailing dot should be removed.
+ * @ return {str} The input string without trailing dot.
+ */
+function removeTrailingDot(str) {
+	if (str[0] === ".") {
+		str = str.slice(1);
+	}
+	return str;
 }
