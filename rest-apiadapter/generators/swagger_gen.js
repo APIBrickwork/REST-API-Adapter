@@ -10,11 +10,11 @@ var util = require("util");
 var metadataReader = require("./metadataReader.js");
 
 /**
-* Metadata
-*/
+ * Metadata
+ */
 var metadataFile = "/api/metadata.json"
 
-if(!(typeof process.env.METADATA_PATH === 'undefined')){
+if (!(typeof process.env.METADATA_PATH === 'undefined')) {
 	metadataFile = process.env.METADATA_PATH;
 }
 
@@ -40,7 +40,7 @@ if (!(typeof process.env.REST_LISTEN_PORT === 'undefined')) {
  */
 var protoFile = "/api/main.proto";
 
-if(!(typeof process.env.API_PROTO_PATH === 'undefined')){
+if (!(typeof process.env.API_PROTO_PATH === 'undefined')) {
 	protoFile = process.env.API_PROTO_PATH;
 }
 var protoParser = new protobuf.DotProto.Parser(fs.readFileSync(protoFile));
@@ -56,7 +56,7 @@ function main() {
 	var metadataResult = metadataReader.readMetadata(metadataFile);
 
 	// If not undefined use the specified values instead of the default ones
-	if(!(metadataResult === "undefined")){
+	if (!(metadataResult === "undefined")) {
 		console.log("swagger_gen.js: Using custom metadata.")
 		metadata = metadataResult;
 	}
@@ -366,6 +366,22 @@ function convertDataTypeProto3ToSwagger(protoType) {
 		return "integer";
 	} else if (protoType === "int64") {
 		return "integer";
+	} else if (protoType === "uint32") {
+		return "integer";
+	} else if (protoType === "uint64") {
+		return "integer";
+	} else if (protoType === "sint32") {
+		return "integer";
+	} else if (protoType === "sint64") {
+		return "integer";
+	} else if (protoType === "fixed32") {
+		return "integer";
+	} else if (protoType === "fixed64") {
+		return "integer";
+	} else if (protoType === "sfixed32") {
+		return "integer";
+	} else if (protoType === "sfixed64") {
+		return "integer";
 	} else if (protoType === "float") {
 		return "number";
 	} else if (protoType === "double") {
@@ -388,6 +404,10 @@ function convertDataTypeProto3ToSwagger(protoType) {
  */
 function isPrimitiveDataType(protoType) {
 	if (protoType === "int32" || protoType === "int64" ||
+		protoType === "uint32" || protoType === "uint64" ||
+		protoType === "sint32" || protoType === "sint64" ||
+		protoType === "fixed32" || protoType === "fixed64" ||
+		protoType === "sfixed32" || protoType === "sfixed64" ||
 		protoType === "float" || protoType === "double" ||
 		protoType === "bytes" || protoType === "bool" ||
 		protoType === "Timestamp" || protoType === "string") {
