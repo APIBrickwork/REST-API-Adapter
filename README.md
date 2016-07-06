@@ -36,6 +36,8 @@ A request stream will result in 3 methods (instead of just one POST method):
 ## (optional) metadata.json
 This file is optional and can be used to customize the generated `swagger.yaml` file. 
 
+The path to this file is per default `/api/metadata.json` but may be specified by chaning the environmental variable `METADATA_PATH`. If no file is available default values will be used.
+
 Example:
 
 ```
