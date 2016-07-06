@@ -9,9 +9,6 @@ var protobuf = require("protobufjs");
 var util = require("util");
 var metadataReader = require("./metadataReader.js");
 
-// Array holding all nested enums (ones defined within messages)
-var nestedEnums = [];
-
 // Array holding all proto objects (main and all recursively added imports)
 var protoObjects = [];
 
@@ -88,7 +85,7 @@ function main() {
 			packagename += ".";
 		}
 
-		appendDynamicDefinitions(protoObjects[i].messages, packagename);
+		appendDynamicDefinitions(protoObjects[i].messages, packagename, protoObjects[i]);
 		appendEnumDefinitions(protoObjects[i].enums, packagename);
 
 		// append nested enums
@@ -96,9 +93,11 @@ function main() {
 			for (var k = 0; k < protoObjects[i].messages[j].enums.length; k++) {
 				var arr = [];
 				arr.push(protoObjects[i].messages[j].enums[k]);
-				appendEnumDefinitions(arr, packagename);
+				// For nested enums add the message name because it's possible to define
+				// nested enums with the same name in different messages which would lead to
+				// duplicate defintions
+				appendEnumDefinitions(arr, packagename + protoObjects[i].messages[j].name + ".");
 			}
-
 		}
 	}
 }
@@ -122,7 +121,6 @@ function handleImportedProtoFiles(mainProtoObj) {
 		}
 
 		protoObjects.push(obj);
-
 	}
 
 }
@@ -380,7 +378,9 @@ function appendDynamicDefinitions(messages, packagename) {
 		var messageName = packagename + messages[i].name;
 
 		if (messages[i].messages.length > 0) {
-			appendDynamicDefinitions(messages[i].messages, packagename);
+
+			appendDynamicDefinitions(messages[i].messages, packagename + messages[i].name + ".");
+
 		}
 
 		fs.appendFileSync(output, " " + messageName + ":\n");
@@ -406,7 +406,13 @@ function appendDynamicDefinitions(messages, packagename) {
 				fs.appendFileSync(output, "    type: " + convertDataTypeProto3ToSwagger(type) +
 					"\n");
 			} else {
-				fs.appendFileSync(output, "    " + getSwaggerRefDefinition(type, packagename) + "\n");
+
+				if(isNestedField(messages[i], type)){
+					fs.appendFileSync(output, "    " + getSwaggerRefDefinition(type, packagename + messages[i].name + ".") + "\n");
+				}else{
+					fs.appendFileSync(output, "    " + getSwaggerRefDefinition(type, packagename) + "\n");
+
+				}
 			}
 		}
 	}
@@ -556,6 +562,26 @@ function determinePackageNameForMessage(messageName) {
 	}
 
 	return packagename;
+}
+
+/**
+* Determines whether the given field name is a nested one of the given message.
+* @param {message} The message.
+* @param {fieldName} The name of the field.
+*/
+function isNestedField(message, fieldName){
+
+	for(var i=0;i<message.messages.length;i++){
+		if(fieldName === message.messages[i].name){
+			return true;
+		}
+	}
+	for (var j=0;j<message.enums.length;j++){
+		if(fieldName === message.enums[j].name){
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
