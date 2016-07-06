@@ -9,6 +9,9 @@ var protobuf = require("protobufjs");
 var util = require("util");
 var metadataReader = require("./metadataReader.js");
 
+// Array holding all nested enums (ones defined within messages)
+var nestedEnums = [];
+
 /**
  * Metadata
  */
@@ -68,6 +71,7 @@ function main() {
 	appendStaticDefinitions();
 	appendDynamicDefinitions(protoObj.messages);
 	appendEnumDefinitions(protoObj.enums);
+	appendEnumDefinitions(nestedEnums);
 }
 /**
  * Appends the static descriptions to the output swagger file.
@@ -309,8 +313,21 @@ function appendDynamicDefinitions(messages) {
 			appendDynamicDefinitions(messages[i].messages);
 		}
 
+		// Add enums to nestedEnums if available
+		for(var j=0;j<messages[i].enums.length;j++){
+			console.log("Found nested enum.");
+			console.log(messages[i].enums[j]);
+			nestedEnums.push(messages[i].enums[j]);
+		}
+
 		fs.appendFileSync(output, " " + messageName + ":\n");
-		fs.appendFileSync(output, "  properties:\n");
+
+		// Defining empty messages (no properties)
+		if(messages[i].fields.length === 0){
+			fs.appendFileSync(output, "   type: object\n");
+		}else{
+			fs.appendFileSync(output, "  properties:\n");
+		}
 
 		for (var j = 0; j < messages[i].fields.length; j++) {
 			var rule = messages[i].fields[j].rule;
