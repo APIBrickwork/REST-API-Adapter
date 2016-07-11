@@ -4,6 +4,8 @@ It uses a given proto3 file to generate an according swagger.yaml file and the c
 
 ## How it works
 
+![REST-APIAdapter Start-Sequence](https://github.com/tfreundo/gRPC-APIAdapter/blob/master/diagrams/REST-APIAdapter_Start_ActivityDiag.png)
+
 ### [swagger_gen.js](https://github.com/tfreundo/gRPC-APIAdapter/blob/master/rest-apiadapter/generators/swagger_gen.js)
 * Reads the proto3 file and optionally the metadata.json file
 * Generates a swagger.yaml definition file using this information
