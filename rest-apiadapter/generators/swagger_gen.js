@@ -319,7 +319,7 @@ function appendOpenStreamPath(grpcServiceName, rpcName) {
 
 	fs.appendFileSync(output, "  x-swagger-router-controller: " +
 		"gen_" + grpcServiceName + "\n");
-	fs.appendFileSync(output, "  get:\n");
+	fs.appendFileSync(output, "  post:\n");
 	fs.appendFileSync(output, "   description: Opens a Stream for gRPC-Service " + rpcName + "\n");
 
 	fs.appendFileSync(output, "   operationId: " + rpcName + "OpenStream" + "\n");
