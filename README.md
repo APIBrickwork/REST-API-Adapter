@@ -4,14 +4,14 @@ It uses a given proto3 file to generate an according swagger.yaml file and the c
 
 ## How it works
 
-![REST-APIAdapter Start-Sequence](https://github.com/tfreundo/gRPC-APIAdapter/blob/master/diagrams/REST-APIAdapter_Start_ActivityDiag.png)
+![REST-APIAdapter Start-Sequence](https://github.com/APIBrickwork/REST-API-Adapter/blob/master/diagrams/REST-APIAdapter_Start_ActivityDiag.png)
 
-### [swagger_gen.js](https://github.com/tfreundo/gRPC-APIAdapter/blob/master/rest-apiadapter/generators/swagger_gen.js)
+### [swagger_gen.js](https://github.com/APIBrickwork/REST-API-Adapter/blob/master/rest-apiadapter/generators/swagger_gen.js)
 * Reads the proto3 file and optionally the metadata.json file
 * Generates a swagger.yaml definition file using this information
 * Offers two static paths:
- * GET `/help`: Shows a HTML representation of the `swagger.yaml` file that was generated. Shows [oops.html](https://github.com/tfreundo/gRPC-APIAdapter/blob/master/rest-apiadapter/html/oops.html) if something went wrong while generating the inline-html file. Uses the controller [helppage.js](https://github.com/tfreundo/gRPC-APIAdapter/blob/master/rest-apiadapter/api/controllers/helppage.js)
- * GET `/service-request/{id}`: Returns information about the service request with the specified ID in path. Uses the controller [getSerReq.js](https://github.com/tfreundo/gRPC-APIAdapter/blob/master/rest-apiadapter/api/controllers/getSerReq.js)
+ * GET `/help`: Shows a HTML representation of the `swagger.yaml` file that was generated. Shows [oops.html](https://github.com/APIBrickwork/REST-API-Adapter/blob/master/rest-apiadapter/html/oops.html) if something went wrong while generating the inline-html file. Uses the controller [helppage.js](https://github.com/APIBrickwork/REST-API-Adapter/blob/master/rest-apiadapter/api/controllers/helppage.js)
+ * GET `/service-request/{id}`: Returns information about the service request with the specified ID in path. Uses the controller [getSerReq.js](https://github.com/APIBrickwork/REST-API-Adapter/blob/master/rest-apiadapter/api/controllers/getSerReq.js)
 * Generates dynamic paths:
  *  Each gRPC service defined in the proto3 file will result in a path with the following pattern `/<grpcName>/<rpcName>`. Where `<grpcName>` is the name of the gRPC Service defined and `<rpcName>` is the name of a RPC defined.
  * Those paths use POST (resp. see [Services using request streams](#services-using-request-streams))
@@ -19,9 +19,9 @@ It uses a given proto3 file to generate an according swagger.yaml file and the c
 * Each path is linked to the specific controller resp. the according function within the specific controller 
 * See [Services using request streams](#services-using-request-streams) for the special case when using request streams in gRPC Services
 
-### [swagger_controller_gen.js](https://github.com/tfreundo/gRPC-APIAdapter/blob/master/rest-apiadapter/generators/swagger_controller_gen.js)
+### [swagger_controller_gen.js](https://github.com/APIBrickwork/REST-API-Adapter/blob/master/rest-apiadapter/generators/swagger_controller_gen.js)
 * Reads the proto3 file
-* Each gRPC Service defined in the proto3 file will result in a generated controller [here](https://github.com/tfreundo/gRPC-APIAdapter/tree/master/rest-apiadapter/api/controllers) with the naming pattern `gen_<grpcName>.js` where `<grpcName>` is the name of the gRPC Service defined
+* Each gRPC Service defined in the proto3 file will result in a generated controller [here](https://github.com/APIBrickwork/REST-API-Adapter/tree/master/rest-apiadapter/api/controllers) with the naming pattern `gen_<grpcName>.js` where `<grpcName>` is the name of the gRPC Service defined
 * Each RPC of each gRPC Service will result in a generated function within the according `gen_<grpcName>.js` file. Those functions are automatically referenced by the `swagger_gen.js`
 * See [Services using request streams](#services-using-request-streams) for the special case when using request streams in gRPC Services
 
