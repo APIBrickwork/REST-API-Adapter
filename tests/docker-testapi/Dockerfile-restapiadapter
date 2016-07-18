@@ -23,7 +23,7 @@ USER swagger
 WORKDIR /home/swagger
 
 # Clone APIAdapter repo
-RUN git clonehttps://github.com/APIBrickwork/REST-API-Adapter.git
+RUN git clone https://github.com/APIBrickwork/REST-API-Adapter.git
 
 # Install all necessary modules using npm
 RUN export NODE_PATH=$NODEPATH:/home/swagger/REST-API-Adapter/rest-apiadapter
