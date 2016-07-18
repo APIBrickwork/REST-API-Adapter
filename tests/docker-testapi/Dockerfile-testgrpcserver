@@ -21,8 +21,8 @@ WORKDIR /home/grpcserver
 RUN git clone https://github.com/APIBrickwork/REST-API-Adapter.git
 
 # Install all necessary modules using npm
-RUN export NODE_PATH=$NODEPATH:/home/grpcserver/https://github.com/APIBrickwork/REST-API-Adapter.git/tests/testapi
-WORKDIR /home/grpcserver/REST-API-Adapter.git/tests/testapi
+RUN export NODE_PATH=$NODEPATH:/home/grpcserver/REST-API-Adapter/tests/testapi
+WORKDIR /home/grpcserver/REST-API-Adapter/tests/testapi
 RUN npm --quiet install
 
 # Start the server
