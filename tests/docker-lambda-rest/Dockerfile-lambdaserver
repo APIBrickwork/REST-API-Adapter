@@ -1,0 +1,34 @@
+FROM node
+MAINTAINER Tobias Freundorfer, https://github.com/tfreundo
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git && \
+    apt-get install -y netcat
+
+VOLUME /api
+EXPOSE 8181
+
+# Add .proto to api folder
+COPY ./lambda.proto /api/main.proto
+
+# Add config.json to api folder
+COPY ./config.json /api/config.json
+
+# Add user
+RUN useradd -ms /bin/bash lambda
+
+USER lambda
+WORKDIR /home/lambda
+
+# Clone repo
+WORKDIR /home/lambda
+RUN git clone https://github.com/APIBrickwork/AWSLambda-gRPC-API.git
+
+# Install all necessary modules using npm
+RUN export NODE_PATH=$NODEPATH:/home/lambda/AWSLambda-gRPC-API/lambdaserver
+WORKDIR /home/lambda/AWSLambda-gRPC-API/lambdaserver
+RUN npm --quiet install
+
+# Start the lambda server
+CMD ["node", "lambdagrpcserver.js"]

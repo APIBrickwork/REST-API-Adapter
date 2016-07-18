@@ -1,0 +1,34 @@
+FROM node
+MAINTAINER Tobias Freundorfer, https://github.com/tfreundo
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git && \
+    apt-get install -y netcat
+
+EXPOSE 10010
+
+# Install swagger project globally
+RUN npm --quiet install -g swagger
+
+# Install npms for YAML to HTML conversion
+RUN npm --quiet install -g bootprint
+RUN npm --quiet install -g bootprint-swagger
+RUN npm --quiet install -g html-inline
+
+# Add user
+RUN useradd -ms /bin/bash swagger
+
+USER swagger
+WORKDIR /home/swagger
+
+# Clone APIAdapter repo
+RUN git clone https://github.com/APIBrickwork/REST-API-Adapter.git
+
+# Install all necessary modules using npm
+RUN export NODE_PATH=$NODEPATH:/home/swagger/REST-API-Adapter/rest-apiadapter
+WORKDIR /home/swagger/REST-API-Adapter/rest-apiadapter
+RUN npm --quiet install
+
+# Start the adapter
+CMD ["sh", "startRESTApi.sh"]
