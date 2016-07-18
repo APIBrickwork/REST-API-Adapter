@@ -1,0 +1,29 @@
+FROM node
+MAINTAINER Tobias Freundorfer, https://github.com/tfreundo
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git
+
+VOLUME /api
+EXPOSE 8181
+
+# Add main.proto to api folder
+COPY ./main.proto /api/main.proto
+
+# Add user
+RUN useradd -ms /bin/bash grpcserver
+
+USER grpcserver
+WORKDIR /home/grpcserver
+
+# Clone APIAdapter repo
+RUN git clone https://github.com/APIBrickwork/REST-API-Adapter.git
+
+# Install all necessary modules using npm
+RUN export NODE_PATH=$NODEPATH:/home/grpcserver/https://github.com/APIBrickwork/REST-API-Adapter.git/tests/testapi
+WORKDIR /home/grpcserver/REST-API-Adapter.git/tests/testapi
+RUN npm --quiet install
+
+# Start the server
+CMD ["node", "testgrpcserver.js"]

@@ -1,0 +1,33 @@
+version: '2'
+services:
+
+  testgrpcserver:
+    build:
+      context: .
+      dockerfile: Dockerfile-testgrpcserver
+    environment:
+      LISTEN_PORT: 8181
+
+  restapiadapter:
+    build:
+      context: .
+      dockerfile: Dockerfile-restapiadapter
+    volumes_from:
+      - testgrpcserver
+    links:
+      - testgrpcserver
+    environment:
+      API_HOST: testgrpcserver
+      API_PORT: 8181
+      API_PROTO_PATH: "/api/main.proto"
+      REST_LISTEN_PORT: 10010
+
+  tester:
+    build:
+      context: .
+      dockerfile: Dockerfile-tester
+    links:
+      - restapiadapter
+    environment:
+      ADAPTER_HOST: restapiadapter
+      ADAPTER_PORT: 10010

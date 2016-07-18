@@ -1,0 +1,14 @@
+{
+  "name": "testgrpcserver",
+  "version": "1.0.0",
+  "description": "This is a Test-gRPC-Server to evaluate if every aspect of proto3 and gRPC is supported.",
+  "main": "testgrpcserver.js",
+  "dependencies": {
+    "grpc": "^0.14.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "tfreundo (https://github.com/tfreundo)",
+  "license": "MIT"
+}
