@@ -1,0 +1,867 @@
+swagger: "2.0"
+info:
+ version: "1.0"
+ title: saltgroup-test-grpc-api (built on 06.07.2016)
+host: localhost:10010
+basePath: /
+schemes:
+ - http
+ - https
+consumes:
+ - application/json
+produces:
+ - application/json
+paths:
+ /help:
+  x-swagger-router-controller: helppage
+  get:
+   description: Returns a HTML representation of the Swagger specification.
+   operationId: getPage
+   produces:
+    - text/html
+   responses:
+    200:
+     description: Success
+ /service-request/{id}:
+  x-swagger-router-controller: getSerReq
+  get:
+    parameters:
+     - name: id
+       in: path
+       required: true
+       description: The ServiceRequestId to query for.
+       type: string
+    description: Gets information for the specified ServiceRequestId.
+    operationId: getSerReq
+    produces:
+     - application/json
+    responses:
+     200:
+      description: Success
+      schema:
+       $ref: "#/definitions/ServiceRequestInfo"
+
+     default:
+      description: Error
+      schema:
+       $ref: "#/definitions/ErrorResponse"
+ /testservice/processdouble:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageDouble
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageDouble"
+   description: gRPC-Service processDouble
+   operationId: processDouble
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processfloat:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageFloat
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageFloat"
+   description: gRPC-Service processFloat
+   operationId: processFloat
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processint32:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageInt32
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageInt32"
+   description: gRPC-Service processInt32
+   operationId: processInt32
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processint64:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageInt64
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageInt64"
+   description: gRPC-Service processInt64
+   operationId: processInt64
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processuint32:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageUint32
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageUint32"
+   description: gRPC-Service processUint32
+   operationId: processUint32
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processuint64:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageUint64
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageUint64"
+   description: gRPC-Service processUint64
+   operationId: processUint64
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processsint32:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageSint32
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageSint32"
+   description: gRPC-Service processSint32
+   operationId: processSint32
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processsint64:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageSint64
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageSint64"
+   description: gRPC-Service processSint64
+   operationId: processSint64
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processfixed32:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageFixed32
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageFixed32"
+   description: gRPC-Service processFixed32
+   operationId: processFixed32
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processfixed64:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageFixed64
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageFixed64"
+   description: gRPC-Service processFixed64
+   operationId: processFixed64
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processsfixed32:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageSfixed32
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageSfixed32"
+   description: gRPC-Service processSfixed32
+   operationId: processSfixed32
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processsfixed64:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageSfixed64
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageSfixed64"
+   description: gRPC-Service processSfixed64
+   operationId: processSfixed64
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processbool:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageBool
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageBool"
+   description: gRPC-Service processBool
+   operationId: processBool
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processstring:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageString
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageString"
+   description: gRPC-Service processString
+   operationId: processString
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processbytes:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageBytes
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageBytes"
+   description: gRPC-Service processBytes
+   operationId: processBytes
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processenum:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageEnum
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageEnum"
+   description: gRPC-Service processEnum
+   operationId: processEnum
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processobject:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageObject
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageObject"
+   description: gRPC-Service processObject
+   operationId: processObject
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processrepeated:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageRepeated
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageRepeated"
+   description: gRPC-Service processRepeated
+   operationId: processRepeated
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processall:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageAll
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageAll"
+   description: gRPC-Service processAll
+   operationId: processAll
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processstreamedinput/{id}:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The ServiceRequestId to query for.
+      type: string
+    - name: MessageObject
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageObject"
+   description: gRPC-Service processStreamedInput
+   operationId: processStreamedInput
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+  delete:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The StreamId to delete.
+      type: string
+   description: Deletes/closes a given Stream for gRPC-Service processStreamedInput
+   operationId: processStreamedInputCloseStream
+   produces:
+    - text/plain
+   responses:
+    200:
+     description: Success
+     schema:
+      title: processStreamedInputCloseStreamResponse
+      type: string
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processstreamedinput/:
+  x-swagger-router-controller: gen_TestService
+  get:
+   description: Opens a Stream for gRPC-Service processStreamedInput
+   operationId: processStreamedInputOpenStream
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processstreamedoutput:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageObject
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageObject"
+   description: gRPC-Service processStreamedOutput
+   operationId: processStreamedOutput
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processstreamedinputoutput/{id}:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The ServiceRequestId to query for.
+      type: string
+    - name: MessageObject
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageObject"
+   description: gRPC-Service processStreamedInputOutput
+   operationId: processStreamedInputOutput
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+  delete:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The StreamId to delete.
+      type: string
+   description: Deletes/closes a given Stream for gRPC-Service processStreamedInputOutput
+   operationId: processStreamedInputOutputCloseStream
+   produces:
+    - text/plain
+   responses:
+    200:
+     description: Success
+     schema:
+      title: processStreamedInputOutputCloseStreamResponse
+      type: string
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processstreamedinputoutput/:
+  x-swagger-router-controller: gen_TestService
+  get:
+   description: Opens a Stream for gRPC-Service processStreamedInputOutput
+   operationId: processStreamedInputOutputOpenStream
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processnested:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageNested
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageNested"
+   description: gRPC-Service processNested
+   operationId: processNested
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /testservice/processnestedexternal:
+  x-swagger-router-controller: gen_TestService
+  post:
+   parameters:
+    - name: MessageNestedExternal
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageNestedExternal"
+   description: gRPC-Service processNestedExternal
+   operationId: processNestedExternal
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /swagger:
+  x-swagger-pipe: swagger_raw
+definitions:
+ ErrorResponse:
+  required:
+   - message
+  properties:
+   message:
+    type: string
+ ServiceRequestResponse:
+  required:
+   - requestId
+  properties:
+   requestId:
+    type: string
+ ServiceRequestInfo:
+  required:
+   - status
+   - service
+  properties:
+   status:
+    type: string
+   service:
+    type: string
+   output:
+    type: [string, object, array]
+ fapra.teamsaltstack.testapi.MessageDouble:
+  properties:
+   val:
+    type: number
+ fapra.teamsaltstack.testapi.MessageFloat:
+  properties:
+   val:
+    type: number
+ fapra.teamsaltstack.testapi.MessageInt32:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageInt64:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageUint32:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageUint64:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageSint32:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageSint64:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageFixed32:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageFixed64:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageSfixed32:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageSfixed64:
+  properties:
+   val:
+    type: integer
+ fapra.teamsaltstack.testapi.MessageBool:
+  properties:
+   val:
+    type: boolean
+ fapra.teamsaltstack.testapi.MessageString:
+  properties:
+   val:
+    type: string
+ fapra.teamsaltstack.testapi.MessageBytes:
+  properties:
+   val:
+    type: string
+ fapra.teamsaltstack.testapi.MessageEnum:
+  properties:
+   enum:
+    $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageEnum.Enum"
+ fapra.teamsaltstack.testapi.MessageObject:
+  properties:
+   object:
+    $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageString"
+ fapra.teamsaltstack.testapi.MessageRepeated:
+  properties:
+   repeatedMessageObject:
+    type: array
+    items:
+     $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageObject"
+ fapra.teamsaltstack.testapi.MessageAll:
+  properties:
+   a:
+    type: number
+   b:
+    type: number
+   c:
+    type: integer
+   d:
+    type: integer
+   e:
+    type: integer
+   f:
+    type: integer
+   g:
+    type: integer
+   h:
+    type: integer
+   i:
+    type: integer
+   j:
+    type: integer
+   k:
+    type: integer
+   l:
+    type: integer
+   m:
+    type: boolean
+   n:
+    type: string
+   o:
+    type: string
+   p:
+    $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageAll.Enum"
+   q:
+    $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageObject"
+   r:
+    type: array
+    items:
+     $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageObject"
+ fapra.teamsaltstack.testapi.MessageNested.Inner:
+  properties:
+   innerVal:
+    type: string
+ fapra.teamsaltstack.testapi.MessageNested:
+  properties:
+   val:
+    $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageNested.Inner"
+ fapra.teamsaltstack.testapi.MessageNestedExternal:
+  properties:
+   val:
+    $ref: "#/definitions/fapra.teamsaltstack.testapi.MessageNested.Inner"
+ fapra.teamsaltstack.testapi.MessageEnum.Enum:
+  type: string
+  enum: ["VALUE_REQUEST","VALUE_RESPONSE"]
+ fapra.teamsaltstack.testapi.MessageAll.Enum:
+  type: string
+  enum: ["VALUE_REQUEST","VALUE_RESPONSE"]

@@ -1,0 +1,844 @@
+swagger: "2.0"
+info:
+ version: "1.0"
+ title: ansiblegroup-test-grpc-api (built on 06.07.2016)
+host: localhost:10010
+basePath: /
+schemes:
+ - http
+ - https
+consumes:
+ - application/json
+produces:
+ - application/json
+paths:
+ /help:
+  x-swagger-router-controller: helppage
+  get:
+   description: Returns a HTML representation of the Swagger specification.
+   operationId: getPage
+   produces:
+    - text/html
+   responses:
+    200:
+     description: Success
+ /service-request/{id}:
+  x-swagger-router-controller: getSerReq
+  get:
+    parameters:
+     - name: id
+       in: path
+       required: true
+       description: The ServiceRequestId to query for.
+       type: string
+    description: Gets information for the specified ServiceRequestId.
+    operationId: getSerReq
+    produces:
+     - application/json
+    responses:
+     200:
+      description: Success
+      schema:
+       $ref: "#/definitions/ServiceRequestInfo"
+
+     default:
+      description: Error
+      schema:
+       $ref: "#/definitions/ErrorResponse"
+ /test/emptyresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service emptyResponse
+   operationId: emptyResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/simpleresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service simpleResponse
+   operationId: simpleResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/complexresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service complexResponse
+   operationId: complexResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/simplerequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Simple
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Simple"
+   description: gRPC-Service simpleRequest
+   operationId: simpleRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/complexrequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Complex
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Complex"
+   description: gRPC-Service complexRequest
+   operationId: complexRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/simplerequestcomplexresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Simple
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Simple"
+   description: gRPC-Service simpleRequestComplexResponse
+   operationId: simpleRequestComplexResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/streamingrequest/{id}:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The ServiceRequestId to query for.
+      type: string
+    - name: Simple
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Simple"
+   description: gRPC-Service streamingRequest
+   operationId: streamingRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+  delete:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The StreamId to delete.
+      type: string
+   description: Deletes/closes a given Stream for gRPC-Service streamingRequest
+   operationId: streamingRequestCloseStream
+   produces:
+    - text/plain
+   responses:
+    200:
+     description: Success
+     schema:
+      title: streamingRequestCloseStreamResponse
+      type: string
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/streamingrequest/:
+  x-swagger-router-controller: gen_test
+  get:
+   description: Opens a Stream for gRPC-Service streamingRequest
+   operationId: streamingRequestOpenStream
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/streamingresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service streamingResponse
+   operationId: streamingResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/bidirectionalstreaming/{id}:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The ServiceRequestId to query for.
+      type: string
+    - name: Simple
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Simple"
+   description: gRPC-Service bidirectionalStreaming
+   operationId: bidirectionalStreaming
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+  delete:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The StreamId to delete.
+      type: string
+   description: Deletes/closes a given Stream for gRPC-Service bidirectionalStreaming
+   operationId: bidirectionalStreamingCloseStream
+   produces:
+    - text/plain
+   responses:
+    200:
+     description: Success
+     schema:
+      title: bidirectionalStreamingCloseStreamResponse
+      type: string
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/bidirectionalstreaming/:
+  x-swagger-router-controller: gen_test
+  get:
+   description: Opens a Stream for gRPC-Service bidirectionalStreaming
+   operationId: bidirectionalStreamingOpenStream
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/enumrequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Status
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Status"
+   description: gRPC-Service enumRequest
+   operationId: enumRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/enumresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service enumResponse
+   operationId: enumResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/oneofrequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Info
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Info"
+   description: gRPC-Service oneOfRequest
+   operationId: oneOfRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/oneofresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service oneOfResponse
+   operationId: oneOfResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/arrayrequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Array
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Array"
+   description: gRPC-Service arrayRequest
+   operationId: arrayRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/arrayresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service arrayResponse
+   operationId: arrayResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/maprequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: SimpleMap
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.SimpleMap"
+   description: gRPC-Service mapRequest
+   operationId: mapRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/mapresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service mapResponse
+   operationId: mapResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/scalarvaluesrequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: AllScalarValues
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.AllScalarValues"
+   description: gRPC-Service scalarValuesRequest
+   operationId: scalarValuesRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/scalarvaluesresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service scalarValuesResponse
+   operationId: scalarValuesResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/importedrequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: External
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.External"
+   description: gRPC-Service importedRequest
+   operationId: importedRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/importedresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service importedResponse
+   operationId: importedResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/absolutelyreferencedrequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: iaas.fapra.Simple
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.Simple"
+   description: gRPC-Service absolutelyReferencedRequest
+   operationId: absolutelyReferencedRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/absolutelyreferencedresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service absolutelyReferencedResponse
+   operationId: absolutelyReferencedResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/dotprefixedreferencedrequest:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: iaas.fapra.Simple
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.Simple"
+   description: gRPC-Service dotPrefixedReferencedRequest
+   operationId: dotPrefixedReferencedRequest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/dotprefixedreferencedresponse:
+  x-swagger-router-controller: gen_test
+  post:
+   parameters:
+    - name: Empty
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/iaas.fapra.testing.Empty"
+   description: gRPC-Service dotPrefixedReferencedResponse
+   operationId: dotPrefixedReferencedResponse
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /swagger:
+  x-swagger-pipe: swagger_raw
+definitions:
+ ErrorResponse:
+  required:
+   - message
+  properties:
+   message:
+    type: string
+ ServiceRequestResponse:
+  required:
+   - requestId
+  properties:
+   requestId:
+    type: string
+ ServiceRequestInfo:
+  required:
+   - status
+   - service
+  properties:
+   status:
+    type: string
+   service:
+    type: string
+   output:
+    type: [string, object, array]
+ iaas.fapra.testing.Empty:
+   type: object
+ iaas.fapra.testing.Simple:
+  properties:
+   text:
+    type: string
+ iaas.fapra.testing.Complex:
+  properties:
+   first:
+    $ref: "#/definitions/iaas.fapra.testing.Simple"
+   second:
+    $ref: "#/definitions/iaas.fapra.testing.Simple"
+ iaas.fapra.testing.Status:
+  properties:
+   value:
+    $ref: "#/definitions/iaas.fapra.testing.Status.Some"
+ iaas.fapra.testing.Info:
+  properties:
+   text:
+    type: string
+   object:
+    $ref: "#/definitions/iaas.fapra.testing.Simple"
+ iaas.fapra.testing.Array:
+  properties:
+   items:
+    type: array
+    items:
+     type: string
+ iaas.fapra.testing.SimpleMap:
+  properties:
+   items:
+    type: array
+    items:
+     $ref: "#/definitions/iaas.fapra.testing.Simple"
+ iaas.fapra.testing.AllScalarValues:
+  properties:
+   doubleValue:
+    type: number
+   floatValue:
+    type: number
+   int32Value:
+    type: integer
+   int64Value:
+    type: integer
+   uint32Value:
+    type: integer
+   uint64Value:
+    type: integer
+   sint32Value:
+    type: integer
+   sint64Value:
+    type: integer
+   fixed32Value:
+    type: integer
+   fixed64Value:
+    type: integer
+   sfixed32Value:
+    type: integer
+   sfixed64Value:
+    type: integer
+   boolValue:
+    type: boolean
+   stringValue:
+    type: string
+   bytesValue:
+    type: string
+ iaas.fapra.testing.Status.Some:
+  type: string
+  enum: ["A","B","C","D"]
+ google.protobuf.Any:
+  properties:
+   type_url:
+    type: string
+   value:
+    type: string
+ iaas.fapra.External:
+  properties:
+   foo:
+    type: string
+ iaas.fapra.Simple:
+  properties:
+   title:
+    type: string
+   content:
+    type: string

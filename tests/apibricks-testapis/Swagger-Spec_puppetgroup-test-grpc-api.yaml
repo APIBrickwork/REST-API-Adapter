@@ -1,0 +1,470 @@
+swagger: "2.0"
+info:
+ version: "1.0"
+ title: puppetgroup-test-grpc-api (built on 06.07.2016)
+host: localhost:10010
+basePath: /
+schemes:
+ - http
+ - https
+consumes:
+ - application/json
+produces:
+ - application/json
+paths:
+ /help:
+  x-swagger-router-controller: helppage
+  get:
+   description: Returns a HTML representation of the Swagger specification.
+   operationId: getPage
+   produces:
+    - text/html
+   responses:
+    200:
+     description: Success
+ /service-request/{id}:
+  x-swagger-router-controller: getSerReq
+  get:
+    parameters:
+     - name: id
+       in: path
+       required: true
+       description: The ServiceRequestId to query for.
+       type: string
+    description: Gets information for the specified ServiceRequestId.
+    operationId: getSerReq
+    produces:
+     - application/json
+    responses:
+     200:
+      description: Success
+      schema:
+       $ref: "#/definitions/ServiceRequestInfo"
+
+     default:
+      description: Error
+      schema:
+       $ref: "#/definitions/ErrorResponse"
+ /test/stringtest:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: StringRequest
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.StringRequest"
+   description: gRPC-Service stringTest
+   operationId: stringTest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/integertest:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: IntegerRequest
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.IntegerRequest"
+   description: gRPC-Service integerTest
+   operationId: integerTest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/floattest:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: FloatRequest
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.FloatRequest"
+   description: gRPC-Service floatTest
+   operationId: floatTest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/doubletest:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: DoubleRequest
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.DoubleRequest"
+   description: gRPC-Service doubleTest
+   operationId: doubleTest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/booltest:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: EvenOddRequest
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.EvenOddRequest"
+   description: gRPC-Service boolTest
+   operationId: boolTest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/enumtest:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: EnumRequest
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.EnumRequest"
+   description: gRPC-Service enumTest
+   operationId: enumTest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/repeatedtest:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: Array
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.Array"
+   description: gRPC-Service repeatedTest
+   operationId: repeatedTest
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/clientstream/{id}:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The ServiceRequestId to query for.
+      type: string
+    - name: StringRequest
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.StringRequest"
+   description: gRPC-Service ClientStream
+   operationId: ClientStream
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+  delete:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The StreamId to delete.
+      type: string
+   description: Deletes/closes a given Stream for gRPC-Service ClientStream
+   operationId: ClientStreamCloseStream
+   produces:
+    - text/plain
+   responses:
+    200:
+     description: Success
+     schema:
+      title: ClientStreamCloseStreamResponse
+      type: string
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/clientstream/:
+  x-swagger-router-controller: gen_Test
+  get:
+   description: Opens a Stream for gRPC-Service ClientStream
+   operationId: ClientStreamOpenStream
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/serverstream:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: StringRequest
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.StringRequest"
+   description: gRPC-Service ServerStream
+   operationId: ServerStream
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/bidirectionalstream/{id}:
+  x-swagger-router-controller: gen_Test
+  post:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The ServiceRequestId to query for.
+      type: string
+    - name: StringRequest
+      in: body
+      required: true
+      schema:
+       $ref: "#/definitions/cloudlab.TestOpsProto.StringRequest"
+   description: gRPC-Service BidirectionalStream
+   operationId: BidirectionalStream
+   consumes:
+    - application/json
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+  delete:
+   parameters:
+    - name: id
+      in: path
+      required: true
+      description: The StreamId to delete.
+      type: string
+   description: Deletes/closes a given Stream for gRPC-Service BidirectionalStream
+   operationId: BidirectionalStreamCloseStream
+   produces:
+    - text/plain
+   responses:
+    200:
+     description: Success
+     schema:
+      title: BidirectionalStreamCloseStreamResponse
+      type: string
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /test/bidirectionalstream/:
+  x-swagger-router-controller: gen_Test
+  get:
+   description: Opens a Stream for gRPC-Service BidirectionalStream
+   operationId: BidirectionalStreamOpenStream
+   produces:
+    - application/json
+   responses:
+    200:
+     description: Success
+     schema:
+      $ref: "#/definitions/ServiceRequestResponse"
+
+    default:
+     description: Error
+     schema:
+      $ref: "#/definitions/ErrorResponse"
+ /swagger:
+  x-swagger-pipe: swagger_raw
+definitions:
+ ErrorResponse:
+  required:
+   - message
+  properties:
+   message:
+    type: string
+ ServiceRequestResponse:
+  required:
+   - requestId
+  properties:
+   requestId:
+    type: string
+ ServiceRequestInfo:
+  required:
+   - status
+   - service
+  properties:
+   status:
+    type: string
+   service:
+    type: string
+   output:
+    type: [string, object, array]
+ cloudlab.TestOpsProto.StringRequest:
+  properties:
+   name:
+    type: string
+   place:
+    type: string
+ cloudlab.TestOpsProto.StringReply:
+  properties:
+   output:
+    type: string
+ cloudlab.TestOpsProto.StringStreamReply:
+  properties:
+   name:
+    type: string
+   place:
+    type: string
+ cloudlab.TestOpsProto.IntegerRequest:
+  properties:
+   firstNumber:
+    type: integer
+   secondNumber:
+    type: integer
+ cloudlab.TestOpsProto.IntegerReply:
+  properties:
+   output:
+    type: string
+ cloudlab.TestOpsProto.FloatRequest:
+  properties:
+   firstNumber:
+    type: number
+   secondNumber:
+    type: number
+ cloudlab.TestOpsProto.FloatReply:
+  properties:
+   output:
+    type: string
+ cloudlab.TestOpsProto.DoubleRequest:
+  properties:
+   firstNumber:
+    type: number
+   secondNumber:
+    type: number
+ cloudlab.TestOpsProto.DoubleReply:
+  properties:
+   output:
+    type: string
+ cloudlab.TestOpsProto.EvenOddRequest:
+  properties:
+   number:
+    type: integer
+ cloudlab.TestOpsProto.EvenOddReply:
+  properties:
+   output:
+    type: boolean
+ cloudlab.TestOpsProto.EnumRequest:
+  properties:
+   status:
+    $ref: "#/definitions/cloudlab.TestOpsProto.EnumRequest.Status"
+ cloudlab.TestOpsProto.EnumReply:
+  properties:
+   output:
+    type: string
+ cloudlab.TestOpsProto.Array:
+  properties:
+   items:
+    type: array
+    items:
+     type: string
+ cloudlab.TestOpsProto.EnumRequest.Status:
+  type: string
+  enum: ["NEW","SHIPPED","DELIVERED","CANCELLED"]
