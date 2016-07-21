@@ -29,7 +29,7 @@ It uses a given proto3 file to generate an according swagger.yaml file and the c
 If a gRPC Service defined in the specific proto3 file use request-streams (this is true for either just request streaming or bi-directional streaming) `swagger_gen.js` and `swagger_controller_gen.js` will generate additional functions to enable that functionality.
 
 A request stream will result in 3 methods (instead of just one POST method):
-* GET `/<grpcName>/<rpcName>`: Creates a service request and opens the stream. Will return the requestId that has to be used for streaming
+* POST `/<grpcName>/<rpcName>`: Creates a service request and opens the stream. Will return the requestId that has to be used for streaming
 * POST `/<grpcName>/<rpcName>/{id}`: Streams the object given in body to the stream of the given requestId `{id}` in path
 * DELETE `/<grpcName>/<rpcName>/{id}`: Closes the stream and therefore indicates the end of streaming
 
